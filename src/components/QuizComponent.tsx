@@ -143,15 +143,15 @@ export const QuizComponent = ({ religion, topic, onComplete }: QuizComponentProp
             key={index}
             onClick={() => handleAnswerSelect(index)}
             disabled={showFeedback}
-            className={`w-full p-4 text-left rounded-lg border-2 transition-colors ${
+            className={`w-full p-4 text-left rounded-lg border-2 transition-colors text-gray-800 ${
               selectedAnswer === index
                 ? showFeedback
                   ? isCorrect
                     ? "border-green-500 bg-green-50"
                     : "border-red-500 bg-red-50"
                   : "border-blue-500 bg-blue-50"
-                : "border-gray-200 hover:border-gray-300"
-            } ${showFeedback ? "cursor-not-allowed" : "cursor-pointer hover:bg-gray-50"}`}
+                : "border-gray-200 bg-gray-50 hover:border-gray-300 hover:bg-gray-100"
+            } ${showFeedback ? "cursor-not-allowed" : "cursor-pointer"}`}
           >
             {option}
           </button>
@@ -159,20 +159,20 @@ export const QuizComponent = ({ religion, topic, onComplete }: QuizComponentProp
 
         {currentQuestion.type === "true_false" && (
           <div className="flex space-x-4">
-            {["true", "false"].map((option) => (
+            {['true', 'false'].map((option) => (
               <button
                 key={option}
                 onClick={() => handleAnswerSelect(option)}
                 disabled={showFeedback}
-                className={`flex-1 p-4 rounded-lg border-2 transition-colors capitalize ${
+                className={`flex-1 p-4 rounded-lg border-2 transition-colors capitalize text-gray-800 ${
                   selectedAnswer === option
                     ? showFeedback
                       ? isCorrect
                         ? "border-green-500 bg-green-50"
                         : "border-red-500 bg-red-50"
                       : "border-blue-500 bg-blue-50"
-                    : "border-gray-200 hover:border-gray-300"
-                } ${showFeedback ? "cursor-not-allowed" : "cursor-pointer hover:bg-gray-50"}`}
+                    : "border-gray-200 bg-gray-50 hover:border-gray-300 hover:bg-gray-100"
+                } ${showFeedback ? "cursor-not-allowed" : "cursor-pointer"}`}
               >
                 {option}
               </button>
@@ -187,12 +187,12 @@ export const QuizComponent = ({ religion, topic, onComplete }: QuizComponentProp
             onChange={(e) => handleAnswerSelect(e.target.value)}
             disabled={showFeedback}
             placeholder="Type your answer here..."
-            className={`w-full p-4 border-2 rounded-lg ${
+            className={`w-full p-4 border-2 rounded-lg text-gray-800 ${
               showFeedback
                 ? isCorrect
                   ? "border-green-500 bg-green-50"
                   : "border-red-500 bg-red-50"
-                : "border-gray-200 focus:border-blue-500"
+                : "border-gray-200 bg-gray-50 focus:border-blue-500"
             }`}
           />
         )}
