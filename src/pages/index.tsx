@@ -22,21 +22,25 @@ const Home: NextPage = () => {
 
   // Check if user has completed onboarding
   useEffect(() => {
-    // Check localStorage for onboarding completion
-    const hasCompletedOnboarding = localStorage.getItem('onboarding_completed');
-    if (hasCompletedOnboarding === 'true' && name && religion.name) {
-      setShowOnboarding(false);
+    // Check localStorage for onboarding completion (only on client-side)
+    if (typeof window !== 'undefined') {
+      const hasCompletedOnboarding = localStorage.getItem('onboarding_completed');
+      if (hasCompletedOnboarding === 'true' && name && religion.name) {
+        setShowOnboarding(false);
+      }
     }
   }, [name, religion]);
 
   const handleOnboardingComplete = () => {
-    localStorage.setItem('onboarding_completed', 'true');
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('onboarding_completed', 'true');
+    }
     setShowOnboarding(false);
   };
 
   // Show onboarding flow for new users
   if (showOnboarding) {
-    return <OnboardingFlow onComplete={() => setShowOnboarding(false)} />;
+    return <OnboardingFlow onComplete={handleOnboardingComplete} />;
   }
 
   return (
@@ -59,9 +63,14 @@ const Home: NextPage = () => {
             </Link>
             <button
               className="w-full rounded-2xl border-2 border-b-4 border-[#042c60] dark:border-gray-600 bg-[#235390] dark:bg-gray-700 px-8 py-3 font-bold uppercase transition hover:bg-[#204b82] dark:hover:bg-gray-600 md:min-w-[320px]"
-              onClick={() => setLoginScreenState("LOGIN")}
+              onClick={() => {
+                if (typeof window !== 'undefined') {
+                  localStorage.removeItem('onboarding_completed');
+                }
+                setShowOnboarding(true);
+              }}
             >
-              Account Settings
+              Restart Onboarding
             </button>
           </div>
         </div>
