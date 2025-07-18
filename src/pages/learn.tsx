@@ -72,8 +72,8 @@ const UnitHeader = () => {
   const religion = useBoundStore((x) => x.religion);
   return (
     <div className="mb-6">
-      <h1 className="text-2xl font-bold text-gray-800 mb-2">{religion.name}</h1>
-      <p className="text-gray-600">Learn through interactive lessons</p>
+      <h1 className="text-2xl font-bold text-gray-800 dark:text-gray-100 mb-2">{religion.name}</h1>
+      <p className="text-gray-600 dark:text-gray-300">Learn through interactive lessons</p>
     </div>
   );
 };
@@ -84,9 +84,9 @@ const UnitSection = ({ unit }: { unit: Unit }): JSX.Element => {
   return (
     <div className="relative mb-16 mt-8 flex max-w-2xl flex-col items-center">
       {/* Unit title */}
-      <div className="text-center mb-8 bg-white/80 backdrop-blur rounded-lg shadow-sm p-4 border border-gray-200">
-        <h2 className="text-2xl font-bold text-black mb-2">{unit.description}</h2>
-        <p className="text-black/70">Unit {unit.unitNumber}</p>
+      <div className="text-center mb-8">
+        <h2 className="text-xl font-bold text-gray-800 dark:text-gray-100 mb-2">Unit {unit.unitNumber}</h2>
+        <p className="text-gray-600 dark:text-gray-300">{unit.description}</p>
       </div>
       
       {/* Lesson tiles in a path-like pattern */}
@@ -111,8 +111,8 @@ const UnitSection = ({ unit }: { unit: Unit }): JSX.Element => {
                   tileStatus === "COMPLETE" 
                     ? "bg-green-500 border-green-600 text-white" 
                     : tileStatus === "ACTIVE"
-                    ? "bg-white border-green-500 text-green-600 hover:border-green-600"
-                    : "bg-gray-200 border-gray-300 text-gray-400"
+                    ? "bg-white dark:bg-gray-800 border-green-500 text-green-600 dark:text-green-400 hover:border-green-600"
+                    : "bg-gray-200 dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-400 dark:text-gray-500"
                 }`}>
                   <div className="text-2xl">
                     {tileStatus === "COMPLETE" && <CheckmarkSvg className="w-8 h-8" />}
@@ -132,8 +132,9 @@ const UnitSection = ({ unit }: { unit: Unit }): JSX.Element => {
                 
                 {/* Lesson label */}
                 <div className="text-center mt-2">
-                  <div className="text-base font-semibold text-black">
-                    {tile.description}
+                  <div className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                    {tile.description?.substring(0, 20)}
+                    {(tile.description?.length ?? 0) > 20 ? "..." : ""}
                   </div>
                 </div>
               </Link>
@@ -164,8 +165,8 @@ const Learn: NextPage = () => {
       <TopBar />
       <LeftBar selectedTab="Learn" />
 
-      <div className="flex justify-center gap-3 pt-14 sm:p-6 sm:pt-10 md:ml-24 lg:ml-64 lg:gap-12 bg-gray-50">
-        <div className="flex max-w-2xl grow flex-col bg-gray-50">
+      <div className="flex justify-center gap-3 pt-14 sm:p-6 sm:pt-10 md:ml-24 lg:ml-64 lg:gap-12">
+        <div className="flex max-w-2xl grow flex-col">
           <UnitHeader />
           {units.map((unit) => (
             <UnitSection unit={unit} key={unit.unitNumber} />
@@ -173,14 +174,14 @@ const Learn: NextPage = () => {
           <div className="sticky bottom-28 left-0 right-0 flex items-end justify-between">
             <Link
               href="/lesson?practice"
-              className="absolute left-4 flex h-16 w-16 items-center justify-center rounded-full border-2 border-b-4 border-gray-200 bg-white transition hover:bg-gray-50 hover:brightness-90 md:left-0"
+              className="absolute left-4 flex h-16 w-16 items-center justify-center rounded-full border-2 border-b-4 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800 transition hover:bg-gray-50 dark:hover:bg-gray-700 hover:brightness-90 md:left-0"
             >
               <span className="sr-only">Practice exercise</span>
               <PracticeExerciseSvg className="h-8 w-8" />
             </Link>
             {scrollY > 100 && (
               <button
-                className="absolute right-4 flex h-14 w-14 items-center justify-center self-end rounded-2xl border-2 border-b-4 border-gray-200 bg-white transition hover:bg-gray-50 hover:brightness-90 md:right-0"
+                className="absolute right-4 flex h-14 w-14 items-center justify-center self-end rounded-2xl border-2 border-b-4 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800 transition hover:bg-gray-50 dark:hover:bg-gray-700 hover:brightness-90 md:right-0"
                 onClick={() => scrollTo(0, 0)}
               >
                 <span className="sr-only">Jump to top</span>

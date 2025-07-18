@@ -1,31 +1,45 @@
+// This file now uses AI-generated dynamic users instead of hardcoded ones
+// Users are generated based on the current user's XP and community diversity
+import { generateLeaderboardUsers } from "~/ai/flows/generate-leaderboard-users";
+
+// Cache for generated users to avoid regenerating on every request
+let cachedUsers: any[] | null = null;
+let lastGeneratedTime = 0;
+const CACHE_DURATION = 10 * 60 * 1000; // 10 minutes
+
+export async function getDynamicUsers(currentUserXP: number = 0) {
+  const now = Date.now();
+  
+  // Use cached users if they're still fresh
+  if (cachedUsers && (now - lastGeneratedTime) < CACHE_DURATION) {
+    return cachedUsers;
+  }
+  
+  try {
+    const result = await generateLeaderboardUsers({
+      userCount: 20,
+      currentUserXP,
+      includeDiversity: true
+    });
+    
+    cachedUsers = result.users;
+    lastGeneratedTime = now;
+    
+    return result.users;
+  } catch (error) {
+    console.error("Failed to generate dynamic users:", error);
+    
+    // Fallback to minimal hardcoded users if AI fails
+    return [
+      { name: "Alex", xp: Math.max(currentUserXP - 50, 0), isCurrentUser: false, level: 1, streak: 3 },
+      { name: "Jordan", xp: Math.max(currentUserXP - 25, 0), isCurrentUser: false, level: 1, streak: 5 },
+      { name: "Sam", xp: currentUserXP + 25, isCurrentUser: false, level: 2, streak: 7 },
+      { name: "Casey", xp: currentUserXP + 50, isCurrentUser: false, level: 2, streak: 10 }
+    ];
+  }
+}
+
+// Legacy export for backward compatibility
 export const fakeUsers = [
-  { name: "Aaron", xp: 424, isCurrentUser: false },
-  { name: "Bobby", xp: 378, isCurrentUser: false },
-  { name: "Cathy", xp: 249, isCurrentUser: false },
-  { name: "Derek", xp: 216, isCurrentUser: false },
-  { name: "Ellen", xp: 211, isCurrentUser: false },
-  { name: "Freddy", xp: 177, isCurrentUser: false },
-  { name: "George", xp: 152, isCurrentUser: false },
-  { name: "Helen", xp: 87, isCurrentUser: false },
-  { name: "Isaac", xp: 82, isCurrentUser: false },
-  { name: "Jacob", xp: 77, isCurrentUser: false },
-  { name: "Kevin", xp: 72, isCurrentUser: false },
-  { name: "Luke", xp: 71, isCurrentUser: false },
-  { name: "Mark", xp: 65, isCurrentUser: false },
-  { name: "Norm", xp: 62, isCurrentUser: false },
-  { name: "Olivia", xp: 59, isCurrentUser: false },
-  { name: "Perry", xp: 52, isCurrentUser: false },
-  { name: "Quentin", xp: 51, isCurrentUser: false },
-  { name: "Ryan", xp: 45, isCurrentUser: false },
-  { name: "Steve", xp: 40, isCurrentUser: false },
-  { name: "Theo", xp: 30, isCurrentUser: false },
-  { name: "Uma", xp: 20, isCurrentUser: false },
-  { name: "Vincent", xp: 10, isCurrentUser: false },
-  { name: "Will", xp: 10, isCurrentUser: false },
-  { name: "Xavier", xp: 10, isCurrentUser: false },
-  { name: "Yan", xp: 10, isCurrentUser: false },
-  { name: "Zachary", xp: 10, isCurrentUser: false },
-  { name: "Arnold", xp: 10, isCurrentUser: false },
-  { name: "Bruno", xp: 10, isCurrentUser: false },
-  { name: "Carl", xp: 10, isCurrentUser: false },
+  { name: "Loading...", xp: 0, isCurrentUser: false }
 ] as const;

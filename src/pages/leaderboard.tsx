@@ -133,7 +133,7 @@ const Leaderboard: NextPage = () => {
 
   const leaderboardLeague = "Bronze League";
 
-  const leaderboardUsers = useLeaderboardUsers();
+  const { users: leaderboardUsers, loading: leaderboardLoading } = useLeaderboardUsers();
 
   return (
     <div>

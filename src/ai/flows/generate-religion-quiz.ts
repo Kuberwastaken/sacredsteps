@@ -12,8 +12,22 @@ import {ai} from '../genkit';
 import {z} from 'genkit';
 
 const GenerateReligionQuizInputSchema = z.object({
-  religion: z.string().describe('The religion the quiz should be about.'),
-  material: z.string().describe('The material to base the quiz on.'),
+  religion: z
+    .string()
+    .describe('The religion the quiz should be about.'),
+  topic: z
+    .string()
+    .describe('The specific topic within the religion to base the quiz on.'),
+  difficulty: z
+    .enum(['beginner', 'intermediate', 'advanced'])
+    .default('beginner')
+    .describe('The learner skill level that the questions should be geared towards.'),
+  questionCount: z
+    .number()
+    .min(3)
+    .max(20)
+    .default(5)
+    .describe('How many questions to generate.'),
 });
 export type GenerateReligionQuizInput = z.infer<typeof GenerateReligionQuizInputSchema>;
 
@@ -38,13 +52,54 @@ const prompt = ai.definePrompt({
   name: 'generateReligionQuizPrompt',
   input: {schema: GenerateReligionQuizInputSchema},
   output: {schema: GenerateReligionQuizOutputSchema},
-  prompt: `You are an expert in creating quizzes about religions.
+  prompt: `You are a world-renowned religious studies professor and pedagogical expert, skilled in creating engaging, educational assessments. Your task is to generate a comprehensive quiz about world religions that is both respectful and academically rigorous.
 
-  Based on the following material about {{religion}}, generate a quiz with multiple-choice questions. The quiz should test the user's understanding of the key concepts in the provided material.
-  
-  Return the quiz in the specified JSON format. Each question must have a 'question' field, an 'answers' field which is an array of strings, and a 'correctAnswerIndex' field that is the 0-based index of the correct answer in the 'answers' array.
+**Context & Approach:**
+- Religion: {{religion}}
+- Topic: {{topic}}
+- Difficulty: {{difficulty}}
+- Question Count: {{questionCount}}
 
-  Material: {{{material}}}`,
+**Your Expertise Requirements:**
+1. **Academic Accuracy**: Every question must be factually correct and represent authentic religious teachings
+2. **Cultural Sensitivity**: Approach all religions with deep respect and understanding
+3. **Progressive Learning**: Structure questions to build understanding from basic concepts to deeper insights
+4. **Diverse Question Types**: Include various formats to accommodate different learning styles
+5. **Meaningful Explanations**: Provide context that enhances understanding
+
+**Question Generation Strategy:**
+- For BEGINNER level: Focus on fundamental concepts, key figures, basic practices
+- For INTERMEDIATE level: Explore connections between concepts, historical context, comparative elements
+- For ADVANCED level: Examine philosophical implications, theological debates, contemporary relevance
+
+**Quality Standards:**
+- Questions should be clear, unambiguous, and intellectually stimulating
+- Avoid oversimplification while maintaining accessibility
+- Include both factual recall and conceptual understanding
+- Ensure cultural authenticity and avoid stereotypes
+- Make learning enjoyable and memorable
+
+**Content Guidelines:**
+- Draw from authentic religious texts, teachings, and practices
+- Include historical context where relevant
+- Highlight the positive aspects and contributions of the religion
+- Encourage critical thinking and deeper exploration
+- Connect abstract concepts to practical applications
+
+Generate {{questionCount}} high-quality multiple-choice questions that will genuinely enhance the learner's understanding of {{topic}} within {{religion}}.
+
+Output MUST follow this exact JSON schema:
+{
+  "quiz": [
+    {
+      "question": "Thoughtfully crafted question that promotes understanding",
+      "answers": ["Correct answer", "Plausible distractor", "Another distractor", "Third distractor"],
+      "correctAnswerIndex": 0
+    }
+  ]
+}
+
+Remember: You are not just testing knowledge, but fostering genuine understanding and appreciation for the rich diversity of human spiritual experience.`,
 });
 
 const generateReligionQuizFlow = ai.defineFlow(

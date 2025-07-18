@@ -3,7 +3,6 @@
 import { useState, useEffect } from 'react';
 import { Button } from '~/components/ui/button';
 import { Card, CardContent } from '~/components/ui/card';
-import { generateSkillNode } from '~/ai/flows/generate-skill-node';
 import type { AnyExercise, SkillNode } from '~/types';
 import { MatchPairsExercise } from './exercises/match-pairs-exercise';
 import { FillBlankExercise } from './exercises/fill-blank-exercise';
@@ -32,14 +31,31 @@ export function AILessonPlayer({ religion, skillTitle, description, nodeId, onCo
     const generateLesson = async () => {
       try {
         setLoading(true);
-        const result = await generateSkillNode({
-          religion,
-          skillTitle,
-          description,
-          nodeId
+        const response = await fetch('/api/test-ai', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            type: 'skill',
+            religion,
+            skillTitle,
+            description,
+            nodeId
+          }),
         });
-        setSkillNode(result);
-        setUserAnswers(new Array(result.exercises.length).fill(null));
+
+        if (!response.ok) {
+          throw new Error('Failed to generate lesson');
+        }
+
+        const data = await response.json();
+        if (data.success && data.data) {
+          setSkillNode(data.data);
+          setUserAnswers(new Array(data.data.exercises.length).fill(null));
+        } else {
+          throw new Error(data.error || 'Unknown error');
+        }
       } catch (err) {
         console.error('Failed to generate lesson:', err);
         setError('Failed to generate lesson content. Please try again.');

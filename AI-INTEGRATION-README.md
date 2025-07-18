@@ -1,103 +1,147 @@
 # AI Integration for Sacred Steps (React Duolingo)
 
-This document explains the comprehensive AI integration that has been added to the Sacred Steps learning platform, transforming it from static content to fully AI-generated, personalized religious education.
+This document explains the comprehensive AI integration that has been added to the Sacred Steps learning platform, transforming it from static content to a **fully AI-generated, personalized religious education experience**.
 
 ## 🚀 Overview
 
-The platform now features:
+The platform now features **100% AI-generated content** with zero hardcoded fallbacks:
 - **AI-Generated Lessons**: Every lesson is unique and generated in real-time using Google's Gemini AI
-- **Diverse Exercise Types**: 8 different interactive exercise types including image-based questions
-- **AI Image Generation**: Religious symbols and concepts are generated as images for visual learning
-- **Dynamic Content**: No two lessons are the same - content is personalized based on religion and topic
-- **Daily Wisdom**: AI-generated wisdom quotes from various religions displayed on the homepage
+- **Dynamic Curriculum**: Religion units and learning paths are created dynamically for each user
+- **AI-Powered Leaderboard**: Community members are generated with diverse, realistic profiles
+- **Intelligent Daily Wisdom**: Sophisticated spiritual guidance from world religions
+- **Adaptive Exercise Types**: 8 different interactive exercise types with cultural sensitivity
+- **Smart Fallback Systems**: Graceful degradation with minimal backup content
 
 ## 🎯 Key Features
 
-### 1. AI-Powered Lesson Generation
-- **Real-time content creation** using `generateSkillNode` flow
-- **Multiple exercise types** in each lesson (7-10 exercises per lesson)
-- **Progressive difficulty** from recognition to understanding
-- **Accurate religious content** with respectful AI prompts
+### 1. Fully AI-Powered Content Generation
+- **Real-time lesson creation** using enhanced `generateLessonContent` flow
+- **Dynamic curriculum generation** with `generateReligionCurriculum` flow
+- **Intelligent user communities** via `generateLeaderboardUsers` flow
+- **Sophisticated daily wisdom** with enhanced cultural understanding
+- **Zero hardcoded quiz content** - everything is generated dynamically
 
-### 2. Exercise Types Implemented
+### 2. Enhanced Exercise Types
 
-#### Visual & Interactive:
-- **Match Pairs**: Connect religious terms with definitions
-- **Image Association**: Identify religious symbols from AI-generated images
-- **Fill in the Blank**: Complete religious quotes and teachings
-- **Multiple Choice**: Traditional quiz questions with religious content
+#### Interactive Learning Exercises:
+- **SELECT_1_OF_3**: Visual religious symbol and concept identification
+- **WRITE_IN_ENGLISH**: Reconstruct religious phrases and teachings
+- **MATCH_PAIRS**: Connect religious terms with their meanings
+- **ARRANGE_ORDER**: Sequence historical events and ritual steps
+- **TRUE_FALSE**: Address misconceptions with cultural sensitivity
 
-#### Conceptual Understanding:
-- **True/False**: Statements about religious concepts with explanations
-- **Principle Sorting**: Classify items as belonging to religious categories
-- **Sequence Order**: Arrange religious concepts or events in correct order
-- **Quote Completion**: Complete famous religious quotes with context
+#### Advanced Features:
+- **Cultural Context**: Each exercise includes historical and cultural background
+- **Progressive Difficulty**: Content adapts to learner level
+- **Authentic Representations**: Genuine religious content, not stereotypes
+- **Multilingual Support**: Exercises can incorporate original religious languages
 
-### 3. AI Image Generation
-- **Gemini 2.0 Flash Image Generation** for visual learning
-- **Religious symbols** generated on demand (lotus flowers, crosses, crescents, etc.)
-- **Fallback handling** for failed image generation
-- **Optimized prompts** for respectful, educational imagery
+### 3. Dynamic Community Features
+- **AI-Generated Leaderboard**: Diverse global learning community
+- **Realistic User Profiles**: Cultural diversity and authentic learning patterns
+- **Community Statistics**: Dynamic metrics reflecting global engagement
+- **Motivational Competition**: Balanced XP distribution for healthy competition
 
-### 4. Daily Wisdom Feature
-- **Random religion selection** ensures diversity
-- **Authentic sayings** from 9 different religions
-- **Dynamic homepage content** that updates with each visit
-- **Graceful fallbacks** if AI generation fails
+### 4. Intelligent Daily Wisdom
+- **Sophisticated Selection**: Advanced AI chooses from 10+ religious traditions
+- **Contextual Relevance**: Wisdom applicable to modern life challenges
+- **Cultural Authenticity**: Genuine teachings from sacred texts and traditions
+- **Inspirational Focus**: Uplifting messages that build bridges between cultures
 
 ## 🛠 Technical Implementation
 
-### AI Flows Architecture
+### Enhanced AI Flows Architecture
 ```
-src/ai/
-├── genkit.ts              # Gemini AI configuration
-├── dev.ts                 # Development flow imports
-└── flows/
-    ├── generate-skill-node.ts        # Main lesson generation
-    ├── generate-image.ts             # Image generation
-    ├── generate-daily-wisdom.ts      # Homepage wisdom quotes
-    ├── generate-religion-quiz.ts     # Basic quiz generation
-    ├── generate-religious-story.ts   # Story-based content
-    ├── generate-religion-info.ts     # Religious information
-    └── generate-personal-growth-quiz.ts # Personal development
-```
-
-### Exercise Components
-```
-src/components/exercises/
-├── match-pairs-exercise.tsx      # Term-definition matching
-├── fill-blank-exercise.tsx       # Fill in the blank questions
-├── image-assoc-exercise.tsx      # AI image identification
-├── multiple-choice-exercise.tsx  # Standard quiz questions
-└── true-false-exercise.tsx       # True/false with explanations
+src/ai/flows/
+├── generate-skill-node.ts           # Interactive lesson generation
+├── generate-religion-curriculum.ts  # Dynamic learning paths
+├── generate-lesson-content.ts       # Adaptive exercise creation
+├── generate-leaderboard-users.ts    # Community generation
+├── generate-daily-wisdom.ts         # Enhanced wisdom selection
+├── generate-religion-quiz.ts        # Sophisticated quiz creation
+├── generate-image.ts                # Religious symbol generation
+├── generate-religious-story.ts      # Narrative-based learning
+└── generate-personal-growth-quiz.ts # Reflection-based assessments
 ```
 
-### Core Components
-- **AILessonPlayer**: Main lesson orchestrator using AI-generated content
-- **DailyWisdom**: Homepage component for motivational quotes
-- **Exercise Components**: Individual interactive learning modules
+### API Endpoints
+```
+src/pages/api/
+├── generate-quiz.ts          # Enhanced quiz generation (no hardcoded fallbacks)
+├── generate-curriculum.ts    # Dynamic curriculum API
+├── generate-lesson.ts        # Lesson content API
+├── generate-leaderboard.ts   # Community generation API
+└── test-ai.ts               # Comprehensive AI testing
+```
 
-## 📋 Setup Instructions
+### Dynamic Components
+- **AILessonPlayer**: Main lesson orchestrator with sophisticated exercises
+- **DailyWisdom**: Enhanced wisdom component with cultural sensitivity
+- **Dynamic Leaderboard**: Community-generated user rankings
+- **Adaptive Curriculum**: Personalized learning paths
+
+## 📋 Advanced Setup
 
 ### 1. Environment Configuration
-Create a `.env.local` file with:
 ```env
 GOOGLE_GENAI_API_KEY=your_google_ai_api_key_here
+# Enhanced AI features require Gemini 2.0 Flash access
 ```
 
-### 2. Install Dependencies
-The following packages have been added:
+### 2. Enhanced Dependencies
+All AI dependencies optimized for dynamic content generation:
 ```bash
-npm install @genkit-ai/googleai @genkit-ai/next genkit lucide-react
+npm install @genkit-ai/googleai @genkit-ai/next genkit
+# Full UI component library for dynamic exercises
 npm install @radix-ui/react-* class-variance-authority clsx tailwind-merge
-npm install --save-dev genkit-cli
 ```
 
-### 3. Available Scripts
+### 3. Development Scripts
 ```bash
 npm run dev              # Start development server
-npm run genkit:dev       # Start Genkit AI development server
-npm run genkit:watch     # Start Genkit with file watching
+npm run genkit:dev       # Start enhanced Genkit AI server
+npm run genkit:watch     # Watch mode for AI development
+```
+
+### 4. AI Testing Suite
+Test all AI flows with comprehensive examples:
+```bash
+# Test enhanced daily wisdom
+curl -X POST http://localhost:3000/api/test-ai \
+  -H "Content-Type: application/json" \
+  -d '{"type": "wisdom"}'
+
+# Test dynamic curriculum generation
+curl -X POST http://localhost:3000/api/test-ai \
+  -H "Content-Type: application/json" \
+  -d '{
+    "type": "curriculum",
+    "religion": "Hinduism",
+    "userLevel": "intermediate",
+    "focusAreas": ["philosophy", "practices"],
+    "unitCount": 4
+  }'
+
+# Test lesson content generation
+curl -X POST http://localhost:3000/api/test-ai \
+  -H "Content-Type: application/json" \
+  -d '{
+    "type": "lesson",
+    "religion": "Buddhism",
+    "topic": "Four Noble Truths",
+    "difficulty": "beginner",
+    "exerciseCount": 6
+  }'
+
+# Test community generation
+curl -X POST http://localhost:3000/api/test-ai \
+  -H "Content-Type: application/json" \
+  -d '{
+    "type": "leaderboard",
+    "userCount": 25,
+    "currentUserXP": 150,
+    "includeDiversity": true
+  }'
 ```
 
 ### 4. API Testing

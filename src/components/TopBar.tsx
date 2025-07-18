@@ -59,9 +59,9 @@ export const TopBar = ({
   const lingots = useBoundStore((x) => x.lingots);
   const religion = useBoundStore((x) => x.religion);
   return (
-    <header className="fixed top-0 left-0 z-20 h-[58px] w-full">
+    <header className="fixed z-20 h-[58px] w-full">
       <div
-        className={`relative flex h-full w-full items-center justify-between border-b-2 px-[10px] transition duration-500 ${borderColor} ${backgroundColor}`}
+        className={`relative flex h-full w-full items-center justify-between border-b-2 px-[10px] transition duration-500 sm:hidden ${borderColor} ${backgroundColor}`}
       >
         <button
           onClick={() =>

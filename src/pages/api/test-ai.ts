@@ -1,6 +1,9 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { generateSkillNode } from "~/ai/flows/generate-skill-node";
 import { generateDailyWisdom } from "~/ai/flows/generate-daily-wisdom";
+import { generateReligionCurriculum } from "~/ai/flows/generate-religion-curriculum";
+import { generateLessonContent } from "~/ai/flows/generate-lesson-content";
+import { generateLeaderboardUsers } from "~/ai/flows/generate-leaderboard-users";
 
 export default async function handler(
   req: NextApiRequest,
@@ -29,7 +32,40 @@ export default async function handler(
       return res.status(200).json({ success: true, data: skillNode });
     }
 
-    return res.status(400).json({ error: "Invalid type parameter" });
+    if (type === "curriculum") {
+      const { religion, userLevel, focusAreas, unitCount } = req.body;
+      const curriculum = await generateReligionCurriculum({
+        religion: religion || "Christianity",
+        userLevel: userLevel || "beginner",
+        focusAreas: focusAreas || ["history", "practices"],
+        unitCount: unitCount || 3
+      });
+      return res.status(200).json({ success: true, data: curriculum });
+    }
+
+    if (type === "lesson") {
+      const { religion, topic, difficulty, lessonType, exerciseCount } = req.body;
+      const lesson = await generateLessonContent({
+        religion: religion || "Islam",
+        topic: topic || "Five Pillars",
+        difficulty: difficulty || "beginner",
+        lessonType: lessonType || "vocabulary",
+        exerciseCount: exerciseCount || 4
+      });
+      return res.status(200).json({ success: true, data: lesson });
+    }
+
+    if (type === "leaderboard") {
+      const { userCount, currentUserXP, includeDiversity } = req.body;
+      const leaderboard = await generateLeaderboardUsers({
+        userCount: userCount || 15,
+        currentUserXP: currentUserXP || 100,
+        includeDiversity: includeDiversity !== false
+      });
+      return res.status(200).json({ success: true, data: leaderboard });
+    }
+
+    return res.status(400).json({ error: "Invalid type parameter. Use: wisdom, skill, curriculum, lesson, or leaderboard" });
 
   } catch (error) {
     console.error("AI generation error:", error);

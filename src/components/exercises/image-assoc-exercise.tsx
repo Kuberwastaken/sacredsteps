@@ -4,7 +4,6 @@ import { useState, useEffect } from 'react';
 import { Button } from '~/components/ui/button';
 import { Card, CardContent } from '~/components/ui/card';
 import type { ImageAssocExercise } from '~/types';
-import { generateImage } from '~/ai/flows/generate-image';
 
 interface ImageAssocExerciseProps {
   exercise: ImageAssocExercise;
@@ -36,8 +35,26 @@ export function ImageAssocExercise({ exercise, userAnswer, onAnswerChange, disab
         try {
           setImageLoading(true);
           setImageError(false);
-          const result = await generateImage({ prompt: exercise.data.imagePrompt });
-          setImageUrl(result.imageDataUri);
+          const response = await fetch('/api/generate-image', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              prompt: exercise.data.imagePrompt
+            }),
+          });
+
+          if (!response.ok) {
+            throw new Error('Failed to generate image');
+          }
+
+          const data = await response.json();
+          if (data.success && data.data) {
+            setImageUrl(data.data.imageDataUri);
+          } else {
+            throw new Error(data.error || 'Unknown error');
+          }
         } catch (error) {
           console.error('Failed to generate image:', error);
           setImageError(true);

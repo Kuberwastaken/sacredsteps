@@ -15,9 +15,9 @@ export const RightBar = () => {
 
   return (
     <aside className="sticky top-0 hidden w-96 flex-col gap-6 self-start sm:flex">
-      <article className="my-6 flex flex-col gap-4 rounded-2xl border-2 border-gray-200 p-6">
-        <h2 className="text-xl font-bold">{religion.name}</h2>
-        <p className="text-gray-500">{religion.description}</p>
+      <article className="my-6 flex flex-col gap-4 rounded-2xl border-2 border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-6">
+        <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100">{religion.name}</h2>
+        <p className="text-gray-500 dark:text-gray-400">{religion.description}</p>
       </article>
     </aside>
   );
