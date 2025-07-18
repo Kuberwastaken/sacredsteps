@@ -1,9 +1,8 @@
 import Link from "next/link";
 import { ChevronLeftSvg, ChevronRightSvg } from "./Svgs";
 import React, { useRef } from "react";
-import languages from "~/utils/languages";
+import { religions } from "~/utils/religions";
 import { useBoundStore } from "~/hooks/useBoundStore";
-import { Flag } from "./Flag";
 
 declare global {
   interface Element {
@@ -44,47 +43,47 @@ const scrollCarousel = ({
 };
 
 const scrollCarouselLeft = ({
-  languagesContainer,
+  religionsContainer,
   startIndexRef,
-  lastLanguageIndex,
+  lastReligionIndex,
 }: {
-  languagesContainer: React.MutableRefObject<HTMLDivElement | null>;
+  religionsContainer: React.MutableRefObject<HTMLDivElement | null>;
   startIndexRef: React.MutableRefObject<number>;
-  lastLanguageIndex: number;
+  lastReligionIndex: number;
 }) => {
-  const container = languagesContainer.current;
+  const container = religionsContainer.current;
   if (!container) return;
   const startIndex = startIndexRef.current;
   const endIndex =
-    startIndex === 0 ? lastLanguageIndex : Math.max(0, startIndex - 2);
+    startIndex === 0 ? lastReligionIndex : Math.max(0, startIndex - 2);
   scrollCarousel({ container, startIndexRef, endIndex });
 };
 
 const scrollCarouselRight = ({
-  languagesContainer,
+  religionsContainer,
   startIndexRef,
-  lastLanguageIndex,
+  lastReligionIndex,
 }: {
-  languagesContainer: React.MutableRefObject<HTMLDivElement | null>;
+  religionsContainer: React.MutableRefObject<HTMLDivElement | null>;
   startIndexRef: React.MutableRefObject<number>;
-  lastLanguageIndex: number;
+  lastReligionIndex: number;
 }) => {
-  const container = languagesContainer.current;
+  const container = religionsContainer.current;
   if (!container) return;
   const startIndex = startIndexRef.current;
   const endIndex =
-    startIndex >= lastLanguageIndex
+    startIndex >= lastReligionIndex
       ? 0
       : (startIndex + 2) % container.children.length;
   scrollCarousel({ container, startIndexRef, endIndex });
 };
 
-export const LanguageCarousel = () => {
-  const setLanguage = useBoundStore((x) => x.setLanguage);
+export const ReligionCarousel = () => {
+  const setReligion = useBoundStore((x) => x.setReligion);
 
   const startIndexRef = useRef(0);
-  const languagesContainer = useRef<null | HTMLDivElement>(null);
-  const lastLanguageIndex = 19;
+  const religionsContainer = useRef<null | HTMLDivElement>(null);
+  const lastReligionIndex = religions.length - 1;
   return (
     <article className="absolute bottom-0 left-0 right-0 hidden h-20 items-center justify-center bg-[#0a4a82] text-white md:flex">
       <div className="flex w-full max-w-5xl justify-between">
@@ -92,9 +91,9 @@ export const LanguageCarousel = () => {
           className="opacity-50"
           onClick={() =>
             scrollCarouselLeft({
-              languagesContainer,
+              religionsContainer,
               startIndexRef,
-              lastLanguageIndex,
+              lastReligionIndex,
             })
           }
         >
@@ -103,19 +102,19 @@ export const LanguageCarousel = () => {
         </button>
         <div
           className="flex items-center gap-6 overflow-x-hidden"
-          ref={languagesContainer}
+          ref={religionsContainer}
         >
-          {languages.map((language) => {
+          {religions.map((religion) => {
             return (
               <Link
-                key={language.code}
+                key={religion.name}
                 className="flex items-center gap-2"
                 href={"/learn"}
-                onClick={() => setLanguage(language)}
+                onClick={() => setReligion(religion)}
               >
-                <Flag language={language} width={40} />
+                <img src={religion.image} alt={religion.name} width={40} />
                 <span className="text-sm font-bold uppercase">
-                  {language.name}
+                  {religion.name}
                 </span>
               </Link>
             );
@@ -125,9 +124,9 @@ export const LanguageCarousel = () => {
           className="opacity-50"
           onClick={() =>
             scrollCarouselRight({
-              languagesContainer,
+              religionsContainer,
               startIndexRef,
-              lastLanguageIndex,
+              lastReligionIndex,
             })
           }
         >

@@ -4,7 +4,7 @@ import type { ComponentProps } from "react";
 import React, { useState } from "react";
 import { useBoundStore } from "~/hooks/useBoundStore";
 import { Calendar } from "./Calendar";
-import { Flag } from "./Flag";
+import { ThemeToggle } from "./ThemeToggle";
 import {
   FireSvg,
   GemSvg,
@@ -44,50 +44,32 @@ const EmptyGemTopBarSvg = (props: ComponentProps<"svg">) => {
   );
 };
 
-const AddLanguageSvg = (props: ComponentProps<"svg">) => {
-  return (
-    <svg width="36" height="29" viewBox="0 0 36 29" {...props}>
-      <g stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
-        <g stroke="#AFAFAF">
-          <path
-            d="M7.743 3c-1.67 0-2.315.125-2.98.48A3.071 3.071 0 0 0 3.48 4.763c-.355.665-.48 1.31-.48 2.98v13.514c0 1.67.125 2.315.48 2.98.297.555.728.986 1.283 1.283.665.355 1.31.48 2.98.48h20.514c1.67 0 2.315-.125 2.98-.48a3.071 3.071 0 0 0 1.283-1.283c.355-.665.48-1.31.48-2.98V7.743c0-1.67-.125-2.315-.48-2.98a3.071 3.071 0 0 0-1.283-1.283c-.665-.355-1.31-.48-2.98-.48H7.743z"
-            strokeWidth="2"
-          />
-          <g strokeLinecap="round" strokeWidth="3">
-            <path d="M18 10v9M13.5 14.5h9" />
-          </g>
-        </g>
-      </g>
-    </svg>
-  );
-};
-
-type MenuState = "HIDDEN" | "LANGUAGES" | "STREAK" | "GEMS" | "MORE";
+type MenuState = "HIDDEN" | "RELIGIONS" | "STREAK" | "GEMS" | "MORE";
 
 export const TopBar = ({
-  backgroundColor = "bg-[#58cc02]",
-  borderColor = "border-[#46a302]",
+  backgroundColor = "bg-[#58cc02] dark:bg-green-700",
+  borderColor = "border-[#46a302] dark:border-green-800",
 }: {
-  backgroundColor?: `bg-${string}`;
-  borderColor?: `border-${string}`;
+  backgroundColor?: string;
+  borderColor?: string;
 }) => {
   const [menu, setMenu] = useState<MenuState>("HIDDEN");
   const [now, setNow] = useState(dayjs());
   const streak = useBoundStore((x) => x.streak);
   const lingots = useBoundStore((x) => x.lingots);
-  const language = useBoundStore((x) => x.language);
+  const religion = useBoundStore((x) => x.religion);
   return (
-    <header className="fixed z-20 h-[58px] w-full">
+    <header className="fixed top-0 left-0 z-20 h-[58px] w-full">
       <div
-        className={`relative flex h-full w-full items-center justify-between border-b-2 px-[10px] transition duration-500 sm:hidden ${borderColor} ${backgroundColor}`}
+        className={`relative flex h-full w-full items-center justify-between border-b-2 px-[10px] transition duration-500 ${borderColor} ${backgroundColor}`}
       >
         <button
           onClick={() =>
-            setMenu((x) => (x === "LANGUAGES" ? "HIDDEN" : "LANGUAGES"))
+            setMenu((x) => (x === "RELIGIONS" ? "HIDDEN" : "RELIGIONS"))
           }
         >
-          <Flag language={language} width={45} />
-          <span className="sr-only">See languages</span>
+          <img src={religion.image} alt={religion.name} width={45} />
+          <span className="sr-only">See religions</span>
         </button>
 
         <button
@@ -128,24 +110,15 @@ export const TopBar = ({
         >
           {((): null | JSX.Element => {
             switch (menu) {
-              case "LANGUAGES":
+              case "RELIGIONS":
                 return (
                   <div className="flex gap-5 p-5">
                     <div className="flex flex-col items-center justify-between gap-2">
                       <div className="rounded-2xl border-4 border-blue-400">
-                        <Flag language={language} width={80} />
+                        <img src={religion.image} alt={religion.name} width={80} />
                       </div>
-                      <span className="font-bold">{language.name}</span>
+                      <span className="font-bold">{religion.name}</span>
                     </div>
-                    <Link
-                      className="flex flex-col items-center justify-between gap-2"
-                      href="/register"
-                    >
-                      <div className="rounded-2xl border-4 border-white">
-                        <AddLanguageSvg className="h-16 w-20" />
-                      </div>
-                      <span className="font-bold text-gray-400">Courses</span>
-                    </Link>
                   </div>
                 );
 
@@ -184,10 +157,10 @@ export const TopBar = ({
 
               case "MORE":
                 return (
-                  <div className="flex grow flex-col">
+                  <div className="flex grow flex-col bg-white dark:bg-gray-800">
                     <Link
-                      className="flex items-center gap-2 p-2 font-bold text-gray-700"
-                      href="https://podcast.duolingo.com"
+                      className="flex items-center gap-2 p-2 font-bold text-gray-700 dark:text-gray-300 hover-theme"
+                      href="https://podcast.sacredsteps.com"
                       target="_blank"
                       rel="noopener noreferrer"
                     >
@@ -195,14 +168,18 @@ export const TopBar = ({
                       Podcast
                     </Link>
                     <Link
-                      className="flex items-center gap-2 border-t-2 border-gray-300 p-2 font-bold text-gray-700"
-                      href="https://schools.duolingo.com"
+                      className="flex items-center gap-2 border-t-2 border-gray-300 dark:border-gray-600 p-2 font-bold text-gray-700 dark:text-gray-300 hover-theme"
+                      href="https://schools.sacredsteps.com"
                       target="_blank"
                       rel="noopener noreferrer"
                     >
                       <GlobeIconSvg className="h-10 w-10" />
                       Schools
                     </Link>
+                    <div className="flex items-center gap-2 border-t-2 border-gray-300 dark:border-gray-600 p-2">
+                      <span className="font-bold text-gray-700 dark:text-gray-300">Theme:</span>
+                      <ThemeToggle />
+                    </div>
                   </div>
                 );
 

@@ -13,7 +13,7 @@ import {
   SettingsGearSvg,
 } from "~/components/Svgs";
 import Link from "next/link";
-import { Flag } from "~/components/Flag";
+import { ReligionSymbol } from "~/components/ReligionSymbol";
 import { useBoundStore } from "~/hooks/useBoundStore";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
@@ -61,7 +61,7 @@ const ProfileTopSection = () => {
   const joinedAt = useBoundStore((x) => x.joinedAt).format("MMMM YYYY");
   const followingCount = 0;
   const followersCount = 0;
-  const language = useBoundStore((x) => x.language);
+  const religion = useBoundStore((x) => x.religion);
 
   useEffect(() => {
     if (!loggedIn) {
@@ -90,7 +90,7 @@ const ProfileTopSection = () => {
           </div>
         </div>
 
-        <Flag language={language} width={40} />
+        <ReligionSymbol religion={religion} size={40} />
       </div>
       <Link
         href="/settings/account"

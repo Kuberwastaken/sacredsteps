@@ -1,24 +1,18 @@
-import type { StaticImageData } from "next/image";
-import _flagsSvg from "../../public/flags.svg";
-import type { Language } from "~/utils/languages";
+import type { Religion } from "~/utils/religions";
+import Image from "next/image";
 
-const flagsSvg = _flagsSvg as StaticImageData;
-
-export const Flag = ({
-  language,
-  width = 84,
+export const ReligionSymbol = ({
+  religion,
+  size = 24,
 }: {
-  language: Language;
-  width?: number;
-}) => {
-  const height = width * (19.3171 / 24);
-  return (
-    <svg viewBox={language.viewBox} style={{ height, width }}>
-      <image
-        height={flagsSvg.height}
-        href={flagsSvg.src}
-        width={flagsSvg.width}
-      ></image>
-    </svg>
-  );
-};
+  religion: Religion;
+  size?: number;
+}) => (
+  <Image
+    src={religion.image}
+    alt={religion.name}
+    width={size}
+    height={size}
+    className="object-contain"
+  />
+);

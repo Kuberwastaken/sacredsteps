@@ -1,3 +1,45 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 255 255 255;
+    --foreground: 0 0 0;
+    --surface: 248 249 250;
+    --border: 224 224 224;
+  }
+
+  .dark {
+    --background: 26 26 26;
+    --foreground: 255 255 255;
+    --surface: 45 45 45;
+    --border: 64 64 64;
+  }
+
+  body {
+    @apply bg-white dark:bg-gray-900 text-black dark:text-white transition-colors duration-300;
+  }
+}
+
+@layer utilities {
+  .bg-theme-surface {
+    @apply bg-gray-50 dark:bg-gray-800;
+  }
+  
+  .text-theme-primary {
+    @apply text-gray-900 dark:text-gray-100;
+  }
+  
+  .text-theme-secondary {
+    @apply text-gray-600 dark:text-gray-300;
+  }
+  
+  .border-theme {
+    @apply border-gray-200 dark:border-gray-700;
+  }
+  
+  .hover-theme {
+    @apply hover:bg-gray-100 dark:hover:bg-gray-700;
+  }
+}

@@ -2,7 +2,7 @@ import type { NextPage } from "next";
 import Link from "next/link";
 import type { ComponentProps } from "react";
 import React, { useState } from "react";
-import { LanguageDropDown } from "~/components/LanguageDropDown";
+import { ReligionDropDown } from "~/components/ReligionDropDown";
 import type { LoginScreenState } from "~/components/LoginScreen";
 import { LoginScreen } from "~/components/LoginScreen";
 
@@ -30,10 +30,10 @@ const ForgotPassword: NextPage = () => {
       <header className="flex h-[70px] w-full justify-center bg-blue-400 font-bold text-white">
         <div className="flex max-w-5xl grow items-center justify-between px-5">
           <Link className="text-3xl" href="/">
-            duolingo
+            Sacred Steps
           </Link>
           <div className="hidden items-center gap-5 md:flex">
-            <LanguageDropDown />
+            <ReligionDropDown />
             <button
               className="rounded-2xl border-b-4 border-blue-300 bg-white px-4 py-2 uppercase text-blue-800 transition hover:brightness-110"
               onClick={() => setLoginScreenState("LOGIN")}
@@ -69,7 +69,7 @@ const ForgotPassword: NextPage = () => {
                   Get started
                 </Link>
                 <div className="min-w-max cursor-pointer rounded-b-2xl border-t-2 border-gray-300 px-5 py-2 hover:bg-gray-100">
-                  Site language: English
+                  Site religion: Christianity
                 </div>
               </div>
             )}

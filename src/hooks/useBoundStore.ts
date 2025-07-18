@@ -2,8 +2,8 @@ import type { StateCreator } from "zustand";
 import { create } from "zustand";
 import type { GoalXpSlice } from "~/stores/createGoalXpStore";
 import { createGoalXpSlice } from "~/stores/createGoalXpStore";
-import type { LanguageSlice } from "~/stores/createLanguageStore";
-import { createLanguageSlice } from "~/stores/createLanguageStore";
+import type { ReligionSlice } from "~/stores/createReligionStore";
+import { createReligionSlice } from "~/stores/createReligionStore";
 import type { LessonSlice } from "~/stores/createLessonStore";
 import { createLessonSlice } from "~/stores/createLessonStore";
 import type { LingotSlice } from "~/stores/createLingotStore";
@@ -16,15 +16,21 @@ import type { UserSlice } from "~/stores/createUserStore";
 import { createUserSlice } from "~/stores/createUserStore";
 import type { XpSlice } from "~/stores/createXpStore";
 import { createXpSlice } from "~/stores/createXpStore";
+import type { LessonProgressSlice } from "~/stores/createLessonProgressStore";
+import { createLessonProgressSlice } from "~/stores/createLessonProgressStore";
+import type { ThemeSlice } from "~/stores/createThemeStore";
+import { createThemeSlice } from "~/stores/createThemeStore";
 
 type BoundState = GoalXpSlice &
-  LanguageSlice &
+  ReligionSlice &
   LessonSlice &
   LingotSlice &
   SoundSettingsSlice &
   StreakSlice &
   UserSlice &
-  XpSlice;
+  XpSlice &
+  LessonProgressSlice &
+  ThemeSlice;
 
 export type BoundStateCreator<SliceState> = StateCreator<
   BoundState,
@@ -35,11 +41,13 @@ export type BoundStateCreator<SliceState> = StateCreator<
 
 export const useBoundStore = create<BoundState>((...args) => ({
   ...createGoalXpSlice(...args),
-  ...createLanguageSlice(...args),
+  ...createReligionSlice(...args),
   ...createLessonSlice(...args),
   ...createLingotSlice(...args),
   ...createSoundSettingsSlice(...args),
   ...createStreakSlice(...args),
   ...createUserSlice(...args),
   ...createXpSlice(...args),
+  ...createLessonProgressSlice(...args),
+  ...createThemeSlice(...args),
 }));

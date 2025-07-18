@@ -2200,9 +2200,9 @@ export const LessonFastForwardEndFailSvg = () => {
   );
 };
 
-export const LessonTopBarHeart = () => {
+export const LessonTopBarHeart = (props: ComponentProps<"svg">) => {
   return (
-    <svg width="28" height="23" viewBox="0 0 28 23" fill="none">
+    <svg width="28" height="23" viewBox="0 0 28 23" fill="none" {...props}>
       <path
         d="M0.5 7.67929C0.5 10.2722 1.81423 12.5649 3.82688 13.9554L12.4105 21.4445C13.4302 22.3342 14.9537 22.3223 15.9595 21.4169L24.592 13.6451C26.3662 12.2371 27.5001 10.0877 27.5001 7.67929C27.5001 3.43814 23.9839 0 19.6464 0C17.43 0 15.428 0.897744 14 2.34164C12.5721 0.897744 10.5701 0 8.35369 0C4.01622 0 0.5 3.43814 0.5 7.67929Z"
         fill="#FF4B4B"
@@ -2218,9 +2218,9 @@ export const LessonTopBarHeart = () => {
   );
 };
 
-export const LessonTopBarEmptyHeart = () => {
+export const LessonTopBarEmptyHeart = (props: ComponentProps<"svg">) => {
   return (
-    <svg width="28" height="23" viewBox="0 0 28 23" fill="none">
+    <svg width="28" height="23" viewBox="0 0 28 23" fill="none" {...props}>
       <path
         d="M0.5 7.67929C0.5 10.2722 1.81423 12.5649 3.82688 13.9554L12.4105 21.4445C13.4302 22.3342 14.9537 22.3223 15.9595 21.4169L24.592 13.6451C26.3662 12.2371 27.5001 10.0877 27.5001 7.67929C27.5001 3.43814 23.9839 0 19.6464 0C17.43 0 15.428 0.897744 14 2.34164C12.5721 0.897744 10.5701 0 8.35369 0C4.01622 0 0.5 3.43814 0.5 7.67929Z"
         fill="#E5E5E5"
@@ -2676,9 +2676,9 @@ export const MoreOptionsSvg = (props: ComponentProps<"svg">) => {
   );
 };
 
-export const CloseSvg = () => {
+export const CloseSvg = (props: ComponentProps<"svg">) => {
   return (
-    <svg height="24" width="24">
+    <svg height="24" width="24" {...props}>
       <path
         fill="currentColor"
         d="m6.4 19.2-1.6-1.6 5.6-5.6-5.6-5.6 1.6-1.6 5.6 5.6 5.6-5.6 1.6 1.6-5.6 5.6 5.6 5.6-1.6 1.6-5.6-5.6Z"
