@@ -72,8 +72,8 @@ const UnitHeader = () => {
   const religion = useBoundStore((x) => x.religion);
   return (
     <div className="mb-6">
-      <h1 className="text-2xl font-bold text-gray-800 dark:text-gray-100 mb-2">{religion.name}</h1>
-      <p className="text-gray-600 dark:text-gray-300">Learn through interactive lessons</p>
+      <h1 className="text-2xl font-bold text-white mb-2">{religion.name}</h1>
+      <p className="text-white/80">Learn through interactive lessons</p>
     </div>
   );
 };
@@ -85,8 +85,8 @@ const UnitSection = ({ unit }: { unit: Unit }): JSX.Element => {
     <div className="relative mb-16 mt-8 flex max-w-2xl flex-col items-center">
       {/* Unit title */}
       <div className="text-center mb-8">
-        <h2 className="text-xl font-bold text-gray-800 dark:text-gray-100 mb-2">Unit {unit.unitNumber}</h2>
-        <p className="text-gray-600 dark:text-gray-300">{unit.description}</p>
+        <h2 className="text-xl font-bold text-white mb-2">Unit {unit.unitNumber}</h2>
+        <p className="text-white/80">{unit.description}</p>
       </div>
       
       {/* Lesson tiles in a path-like pattern */}
@@ -132,7 +132,7 @@ const UnitSection = ({ unit }: { unit: Unit }): JSX.Element => {
                 
                 {/* Lesson label */}
                 <div className="text-center mt-2">
-                  <div className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                  <div className="text-sm font-medium text-white/90">
                     {tile.description?.substring(0, 20)}
                     {(tile.description?.length ?? 0) > 20 ? "..." : ""}
                   </div>
@@ -165,8 +165,8 @@ const Learn: NextPage = () => {
       <TopBar />
       <LeftBar selectedTab="Learn" />
 
-      <div className="flex justify-center gap-3 pt-14 sm:p-6 sm:pt-10 md:ml-24 lg:ml-64 lg:gap-12">
-        <div className="flex max-w-2xl grow flex-col">
+      <div className="flex justify-center gap-3 pt-14 sm:p-6 sm:pt-10 md:ml-24 lg:ml-64 lg:gap-12 min-h-screen">
+        <div className="flex max-w-2xl grow flex-col space-glass p-6 rounded-2xl my-6">
           <UnitHeader />
           {units.map((unit) => (
             <UnitSection unit={unit} key={unit.unitNumber} />

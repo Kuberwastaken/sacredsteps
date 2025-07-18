@@ -51,20 +51,24 @@
     "zustand": "^4.4.7"
   },
   "devDependencies": {
+    "@tailwindcss/postcss": "^4.1.11",
     "@types/eslint": "^8.56.2",
     "@types/node": "^22.5.5",
+    "@types/postcss-import": "^14.0.3",
     "@types/react": "^18.3.5",
     "@types/react-dom": "^18.3.0",
     "@typescript-eslint/eslint-plugin": "^6.19.0",
     "@typescript-eslint/parser": "^6.19.0",
-    "autoprefixer": "^10.4.16",
+    "autoprefixer": "^10.4.21",
     "eslint": "^8.56.0",
     "eslint-config-next": "^14.0.4",
     "genkit-cli": "^1.13.0",
-    "postcss": "^8.4.47",
+    "postcss": "^8.5.6",
+    "postcss-import": "^16.1.1",
+    "postcss-nesting": "^13.0.2",
     "prettier": "^3.3.3",
     "prettier-plugin-tailwindcss": "^0.6.6",
-    "tailwindcss": "^3.4.11",
+    "tailwindcss": "^4.1.11",
     "typescript": "^5.3.0"
   },
   "ct3aMetadata": {

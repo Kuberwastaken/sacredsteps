@@ -25,12 +25,20 @@ export const useLeaderboardUsers = () => {
 
         if (response.ok) {
           const data = await response.json();
-          if (data.success && data.data) {
+          if (data.success && data.data && data.data.users && data.data.users.length > 0) {
             setDynamicUsers(data.data.users);
+          } else {
+            // No fallback users - show only current user
+            setDynamicUsers([]);
           }
+        } else {
+          // API error - show only current user
+          setDynamicUsers([]);
         }
       } catch (error) {
         console.error('Failed to fetch leaderboard users:', error);
+        // Network error - show only current user
+        setDynamicUsers([]);
       } finally {
         setLoading(false);
       }

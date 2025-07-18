@@ -37,13 +37,13 @@ export const QuizComponent = ({ religion, topic, onComplete }: QuizComponentProp
           questions?: QuizQuestion[];
           error?: string;
         };
-        if (data.success && data.questions) {
+        if (data.success && data.questions && data.questions.length > 0) {
           setQuestions(data.questions);
         } else {
-          setError(data.error || "Failed to load quiz");
+          setError(data.error || "AI quiz generation failed. Please try again later.");
         }
       } catch (err) {
-        setError("Network error loading quiz");
+        setError("Unable to connect to AI service. Please check your connection.");
       } finally {
         setLoading(false);
       }

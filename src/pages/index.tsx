@@ -11,6 +11,7 @@ import type { StaticImageData } from "next/image";
 import { ReligionCarousel } from "~/components/ReligionCarousel";
 import DailyWisdom from "~/components/daily-wisdom";
 import { useBoundStore } from "~/hooks/useBoundStore";
+import { useRouter } from "next/router";
 
 const bgSnow = _bgSnow as StaticImageData;
 
@@ -19,6 +20,7 @@ const Home: NextPage = () => {
   const [showOnboarding, setShowOnboarding] = useState(true);
   const name = useBoundStore((x) => x.name);
   const religion = useBoundStore((x) => x.religion);
+  const router = useRouter();
 
   // Check if user has completed onboarding
   useEffect(() => {
@@ -38,14 +40,18 @@ const Home: NextPage = () => {
     setShowOnboarding(false);
   };
 
+  const handleStartLesson = () => {
+    router.push('/lesson');
+  };
+
   // Show onboarding flow for new users
   if (showOnboarding) {
-    return <OnboardingFlow onComplete={handleOnboardingComplete} />;
+    return <OnboardingFlow onComplete={handleOnboardingComplete} onStartLesson={handleStartLesson} />;
   }
 
   return (
     <main
-      className="flex min-h-screen flex-col items-center justify-center bg-[#235390] dark:bg-gray-900 text-white transition-colors duration-300"
+      className="flex min-h-screen flex-col items-center justify-center bg-transparent text-white transition-colors duration-300"
       style={{ backgroundImage: `url(${bgSnow.src})` }}
     >
       <MainNavThemeToggle />
@@ -61,17 +67,6 @@ const Home: NextPage = () => {
             >
               Continue Learning
             </Link>
-            <button
-              className="w-full rounded-2xl border-2 border-b-4 border-[#042c60] dark:border-gray-600 bg-[#235390] dark:bg-gray-700 px-8 py-3 font-bold uppercase transition hover:bg-[#204b82] dark:hover:bg-gray-600 md:min-w-[320px]"
-              onClick={() => {
-                if (typeof window !== 'undefined') {
-                  localStorage.removeItem('onboarding_completed');
-                }
-                setShowOnboarding(true);
-              }}
-            >
-              Restart Onboarding
-            </button>
           </div>
         </div>
       </div>

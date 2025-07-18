@@ -19,6 +19,15 @@ export default async function handler(
   }
 
   try {
+    // Check if API key is available
+    if (!process.env.GOOGLE_AI_API_KEY && !process.env.GOOGLE_GENAI_API_KEY) {
+      console.log('No Google AI API key found, client will use fallback content');
+      return res.status(503).json({ 
+        success: false, 
+        error: "AI service unavailable" 
+      });
+    }
+
     const wisdom = await generateDailyWisdom({});
     
     res.status(200).json({
@@ -26,11 +35,21 @@ export default async function handler(
       success: true
     });
 
-  } catch (error) {
-    console.error("Daily wisdom generation error:", error);
-    res.status(500).json({
-      success: false,
-      error: "Failed to generate daily wisdom"
-    });
+  } catch (error: any) {
+    console.log("Daily wisdom generation error:", error);
+    
+    // Check if it's a Google AI API overload error
+    if (error?.status === 503 || error?.message?.includes('overloaded')) {
+      console.log('AI service temporarily overloaded, client will use fallback');
+      res.status(503).json({
+        success: false,
+        error: "AI service temporarily overloaded"
+      });
+    } else {
+      res.status(500).json({
+        success: false,
+        error: "Failed to generate daily wisdom"
+      });
+    }
   }
 }

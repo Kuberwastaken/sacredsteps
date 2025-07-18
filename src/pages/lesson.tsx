@@ -1,7 +1,7 @@
 import type { NextPage } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import {
   AppleSvg,
   BigCloseSvg,
@@ -19,25 +19,18 @@ import womanPng from "../../public/woman.png";
 import { useBoundStore } from "~/hooks/useBoundStore";
 import { useRouter } from "next/router";
 
-const lessonProblem1 = {
-  type: "SELECT_1_OF_3",
-  question: `Which one of these is "the apple"?`,
-  answers: [
-    { icon: <AppleSvg />, name: "la manzana" },
-    { icon: <BoySvg />, name: "el niño" },
-    { icon: <WomanSvg />, name: "la mujer" },
-  ],
-  correctAnswer: 0,
-} as const;
+type LessonExercise = {
+  type: "SELECT_1_OF_3" | "WRITE_IN_ENGLISH" | "MATCH_PAIRS" | "ARRANGE_ORDER" | "TRUE_FALSE";
+  question: string;
+  answers?: { icon?: React.ReactNode; name: string }[];
+  options?: string[];
+  answerTiles?: string[];
+  correctAnswer: number | number[];
+  explanation?: string;
+};
 
-const lessonProblem2 = {
-  type: "WRITE_IN_ENGLISH",
-  question: "El niño",
-  answerTiles: ["woman", "milk", "water", "I", "The", "boy"],
-  correctAnswer: [4, 5],
-} as const;
-
-const lessonProblems = [lessonProblem1, lessonProblem2];
+// No hardcoded fallbacks - pure AI-generated content only
+const defaultLessonProblems: LessonExercise[] = [];
 
 const numbersEqual = (a: readonly number[], b: readonly number[]): boolean => {
   return a.length === b.length && a.every((_, i) => a[i] === b[i]);
@@ -67,6 +60,71 @@ const Lesson: NextPage = () => {
   const [quitMessageShown, setQuitMessageShown] = useState(false);
 
   const [selectedAnswers, setSelectedAnswers] = useState<number[]>([]);
+  const [lessonProblems, setLessonProblems] = useState<LessonExercise[]>(defaultLessonProblems);
+  const [isLoading, setIsLoading] = useState(true);
+  const [lessonGenerated, setLessonGenerated] = useState(false);
+
+  const religion = useBoundStore((x) => x.religion);
+
+  // Generate AI lesson content on component mount
+  useEffect(() => {
+    // Only generate lesson content once
+    if (lessonGenerated) return;
+
+    const generateLessonContent = async () => {
+      try {
+        setIsLoading(true);
+        const response = await fetch('/api/generate-lesson', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            religion: religion.name,
+            topic: 'Basic Concepts',
+            difficulty: 'beginner',
+            lessonType: 'vocabulary',
+            exerciseCount: 5
+          }),
+        });
+
+        if (!response.ok) {
+          console.warn(`AI lesson API returned ${response.status}: ${response.statusText}`);
+          setLessonProblems([]);
+          return;
+        }
+
+        const data = await response.json();
+        if (data.success && data.lesson && data.lesson.exercises) {
+          // Convert AI exercise format to our lesson format
+          const aiExercises = data.lesson.exercises.map((exercise: any) => ({
+            type: exercise.type,
+            question: exercise.question,
+            answers: exercise.options ? exercise.options.map((opt: any) => ({ 
+              name: typeof opt === 'string' ? opt : opt.text || opt 
+            })) : undefined,
+            options: exercise.options,
+            answerTiles: exercise.answerTiles || exercise.wordTiles,
+            correctAnswer: exercise.correctAnswer,
+            explanation: exercise.explanation
+          }));
+          setLessonProblems(aiExercises);
+          console.log('Successfully loaded AI-generated lesson content');
+        } else {
+          console.warn('AI lesson generation failed, no content available');
+          setLessonProblems([]);
+        }
+      } catch (error) {
+        console.error('Failed to generate lesson content:', error);
+        setLessonProblems([]);
+      } finally {
+        setIsLoading(false);
+        setLessonGenerated(true);
+      }
+    };
+
+    generateLessonContent();
+  }, [religion.name, lessonGenerated]);
 
   const startTime = useRef(Date.now());
   const endTime = useRef(startTime.current + 1000 * 60 * 3 + 1000 * 33);
@@ -74,9 +132,32 @@ const Lesson: NextPage = () => {
   const [questionResults, setQuestionResults] = useState<QuestionResult[]>([]);
   const [reviewLessonShown, setReviewLessonShown] = useState(false);
 
-  const problem = lessonProblems[lessonProblem] ?? lessonProblem1;
+  const problem = lessonProblems[lessonProblem] ?? null;
+  
+  if (!problem || lessonProblems.length === 0) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-transparent">
+        <div className="text-center space-glass p-8 rounded-lg max-w-md">
+          <h1 className="text-2xl font-bold text-white mb-4">
+            {isLoading ? 'Generating lesson content...' : 'AI service unavailable'}
+          </h1>
+          <p className="text-white/80 mb-4">
+            {isLoading 
+              ? 'Please wait while we create your personalized lesson'
+              : 'Unable to generate lesson content. Please try again later.'
+            }
+          </p>
+          {!isLoading && (
+            <Link href="/learn" className="text-green-400 hover:text-green-300 underline">
+              Return to lessons
+            </Link>
+          )}
+        </div>
+      </div>
+    );
+  }
 
-  const totalCorrectAnswersNeeded = 2;
+  const totalCorrectAnswersNeeded = lessonProblems.length;
 
   const [isStartingLesson, setIsStartingLesson] = useState(true);
   const hearts =
@@ -85,10 +166,22 @@ const Lesson: NextPage = () => {
       ? 3 - incorrectAnswerCount
       : null;
 
-  const { correctAnswer } = problem;
-  const isAnswerCorrect = Array.isArray(correctAnswer)
-    ? numbersEqual(selectedAnswers, correctAnswer)
-    : selectedAnswer === correctAnswer;
+  const problemCorrectAnswer = problem.correctAnswer;
+  const isAnswerCorrect = Array.isArray(problemCorrectAnswer)
+    ? numbersEqual(selectedAnswers, problemCorrectAnswer)
+    : selectedAnswer === problemCorrectAnswer;
+
+  // Show loading state while generating content
+  if (isLoading) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-transparent">
+        <div className="text-center space-glass p-8 rounded-lg max-w-md">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-500 mx-auto mb-4"></div>
+          <p className="text-white">Generating your personalized lesson...</p>
+        </div>
+      </div>
+    );
+  }
 
   const onCheckAnswer = () => {
     setCorrectAnswerShown(true);
@@ -103,14 +196,17 @@ const Lesson: NextPage = () => {
         question: problem.question,
         yourResponse:
           problem.type === "SELECT_1_OF_3"
-            ? problem.answers[selectedAnswer ?? 0]?.name ?? ""
-            : selectedAnswers.map((i) => problem.answerTiles[i]).join(" "),
+            ? problem.answers?.[selectedAnswer ?? 0]?.name ?? ""
+            : selectedAnswers.map((i) => problem.answerTiles?.[i] ?? "").join(" "),
         correctResponse:
           problem.type === "SELECT_1_OF_3"
-            ? problem.answers[problem.correctAnswer].name
-            : problem.correctAnswer
-                .map((i) => problem.answerTiles[i])
-                .join(" "),
+            ? (() => {
+                const correctIdx = Array.isArray(problemCorrectAnswer) ? problemCorrectAnswer[0] : problemCorrectAnswer;
+                return problem.answers && typeof correctIdx === 'number' ? problem.answers[correctIdx]?.name ?? "" : "";
+              })()
+            : Array.isArray(problemCorrectAnswer)
+                ? problemCorrectAnswer.map((i) => problem.answerTiles?.[i] ?? "").join(" ")
+                : problem.answerTiles?.[problemCorrectAnswer] ?? "",
       },
     ]);
   };
@@ -239,13 +335,13 @@ const ProgressBar = ({
   return (
     <header className="flex items-center gap-4">
       {correctAnswerCount === 0 ? (
-        <Link href="/learn" className="text-gray-400">
+        <Link href="/learn" className="text-gray-400 hover:text-white">
           <CloseSvg />
           <span className="sr-only">Exit lesson</span>
         </Link>
       ) : (
         <button
-          className="text-gray-400"
+          className="text-gray-400 hover:text-white"
           onClick={() => setQuitMessageShown(true)}
         >
           <CloseSvg />
@@ -253,7 +349,7 @@ const ProgressBar = ({
         </button>
       )}
       <div
-        className="h-4 grow rounded-full bg-gray-200"
+        className="h-4 grow rounded-full bg-gray-200/30"
         role="progressbar"
         aria-valuemin={0}
         aria-valuemax={1}
@@ -305,28 +401,28 @@ const QuitMessage = ({
       <article
         className={
           quitMessageShown
-            ? "fixed bottom-0 left-0 right-0 z-40 flex flex-col gap-4 bg-white px-5 py-12 text-center transition-all duration-300 sm:flex-row"
-            : "fixed -bottom-96 left-0 right-0 z-40 flex flex-col bg-white px-5 py-12 text-center transition-all duration-300 sm:flex-row"
+            ? "fixed bottom-0 left-0 right-0 z-40 flex flex-col gap-4 space-glass px-5 py-12 text-center transition-all duration-300 sm:flex-row"
+            : "fixed -bottom-96 left-0 right-0 z-40 flex flex-col space-glass px-5 py-12 text-center transition-all duration-300 sm:flex-row"
         }
         aria-hidden={!quitMessageShown}
       >
         <div className="flex grow flex-col gap-4">
-          <h2 className="text-lg font-bold sm:text-2xl">
+          <h2 className="text-lg font-bold sm:text-2xl text-white">
             Are you sure you want to quit?
           </h2>
-          <p className="text-gray-500 sm:text-lg">
+          <p className="text-gray-300 sm:text-lg">
             All progress for this lesson will be lost.
           </p>
         </div>
         <div className="flex grow flex-col items-center justify-center gap-4 sm:flex-row-reverse">
           <Link
-            className="flex w-full items-center justify-center rounded-2xl border-b-4 border-blue-500 bg-blue-400 py-3 font-bold uppercase text-white transition hover:brightness-105 sm:w-48"
+            className="flex w-full items-center justify-center rounded-2xl border-b-4 border-red-600 bg-red-500 py-3 font-bold uppercase text-white transition hover:brightness-105 sm:w-48"
             href="/learn"
           >
             Quit
           </Link>
           <button
-            className="w-full rounded-2xl py-3 font-bold uppercase text-blue-400 transition hover:brightness-90 sm:w-48 sm:border-2 sm:border-b-4 sm:border-gray-300 sm:text-gray-400 sm:hover:bg-gray-100"
+            className="w-full rounded-2xl py-3 font-bold uppercase text-green-400 transition hover:brightness-90 sm:w-48 sm:border-2 sm:border-b-4 sm:border-green-500 sm:text-green-400 sm:hover:bg-green-500/10"
             onClick={() => setQuitMessageShown(false)}
           >
             Stay
@@ -443,7 +539,7 @@ const ProblemSelect1Of3 = ({
   onSkip,
   hearts,
 }: {
-  problem: typeof lessonProblem1;
+  problem: LessonExercise;
   correctAnswerCount: number;
   totalCorrectAnswersNeeded: number;
   selectedAnswer: number | null;
@@ -460,7 +556,7 @@ const ProblemSelect1Of3 = ({
   const { question, answers, correctAnswer } = problem;
 
   return (
-    <div className="flex min-h-screen flex-col gap-5 px-4 py-5 sm:px-0 sm:py-0">
+    <div className="flex min-h-screen flex-col gap-5 px-4 py-5 sm:px-0 sm:py-0 bg-transparent">
       <div className="flex grow flex-col items-center gap-5">
         <div className="w-full max-w-5xl sm:mt-8 sm:px-5">
           <ProgressBar
@@ -471,14 +567,14 @@ const ProblemSelect1Of3 = ({
           />
         </div>
         <section className="flex max-w-2xl grow flex-col gap-5 self-center sm:items-center sm:justify-center sm:gap-24 sm:px-5">
-          <h1 className="self-start text-2xl font-bold sm:text-3xl">
+          <h1 className="self-start text-2xl font-bold sm:text-3xl text-white">
             {question}
           </h1>
           <div
             className="grid grid-cols-2 gap-2 sm:grid-cols-3"
             role="radiogroup"
           >
-            {answers.map((answer, i) => {
+            {answers?.map((answer, i) => {
               return (
                 <div
                   key={i}
@@ -502,7 +598,10 @@ const ProblemSelect1Of3 = ({
       </div>
 
       <CheckAnswer
-        correctAnswer={answers[correctAnswer].name}
+        correctAnswer={(() => {
+          const correctIdx = Array.isArray(correctAnswer) ? correctAnswer[0] : correctAnswer;
+          return answers && typeof correctIdx === 'number' ? answers[correctIdx]?.name ?? "" : "";
+        })()}
         correctAnswerShown={correctAnswerShown}
         isAnswerCorrect={isAnswerCorrect}
         isAnswerSelected={selectedAnswer !== null}
@@ -534,7 +633,7 @@ const ProblemWriteInEnglish = ({
   onSkip,
   hearts,
 }: {
-  problem: typeof lessonProblem2;
+  problem: LessonExercise;
   correctAnswerCount: number;
   totalCorrectAnswersNeeded: number;
   selectedAnswers: number[];
@@ -551,7 +650,7 @@ const ProblemWriteInEnglish = ({
   const { question, correctAnswer, answerTiles } = problem;
 
   return (
-    <div className="flex min-h-screen flex-col gap-5 px-4 py-5 sm:px-0 sm:py-0">
+    <div className="flex min-h-screen flex-col gap-5 px-4 py-5 sm:px-0 sm:py-0 bg-transparent">
       <div className="flex grow flex-col items-center gap-5">
         <div className="w-full max-w-5xl sm:mt-8 sm:px-5">
           <ProgressBar
@@ -562,17 +661,17 @@ const ProblemWriteInEnglish = ({
           />
         </div>
         <section className="flex max-w-2xl grow flex-col gap-5 self-center sm:items-center sm:justify-center sm:gap-24">
-          <h1 className="mb-2 text-2xl font-bold sm:text-3xl">
+          <h1 className="mb-2 text-2xl font-bold sm:text-3xl text-white">
             Write this in English
           </h1>
 
           <div className="w-full">
             <div className="flex items-center gap-2 px-2">
               <Image src={womanPng} alt="" width={92} height={115} />
-              <div className="relative ml-2 w-fit rounded-2xl border-2 border-gray-200 p-4">
-                {question}
+              <div className="relative ml-2 w-fit rounded-2xl border-2 border-gray-200/30 p-4 space-glass">
+                <span className="text-white">{question}</span>
                 <div
-                  className="absolute h-4 w-4 rotate-45 border-b-2 border-l-2 border-gray-200 bg-white"
+                  className="absolute h-4 w-4 rotate-45 border-b-2 border-l-2 border-gray-200/30 bg-[#14192D]/40"
                   style={{
                     top: "calc(50% - 8px)",
                     left: "-10px",
@@ -593,14 +692,14 @@ const ProblemWriteInEnglish = ({
                       });
                     }}
                   >
-                    {answerTiles[i]}
+                    {answerTiles?.[i] ?? ""}
                   </button>
                 );
               })}
             </div>
           </div>
           <div className="flex flex-wrap justify-center gap-1">
-            {answerTiles.map((answerTile, i) => {
+            {answerTiles?.map((answerTile, i) => {
               return (
                 <button
                   key={i}
@@ -628,7 +727,12 @@ const ProblemWriteInEnglish = ({
       </div>
 
       <CheckAnswer
-        correctAnswer={correctAnswer.map((i) => answerTiles[i]).join(" ")}
+        correctAnswer={(() => {
+          if (Array.isArray(correctAnswer) && answerTiles) {
+            return correctAnswer.map((i) => answerTiles[i] ?? "").join(" ");
+          }
+          return "";
+        })()}
         correctAnswerShown={correctAnswerShown}
         isAnswerCorrect={isAnswerCorrect}
         isAnswerSelected={selectedAnswers.length > 0}
@@ -769,7 +873,7 @@ const ReviewLesson = ({
         ].join(" ")}
         onClick={() => setReviewLessonShown(false)}
       ></div>
-      <div className="relative flex w-full max-w-4xl flex-col gap-5 rounded-2xl border-2 border-gray-200 bg-white p-8">
+      <div className="relative flex w-full max-w-4xl flex-col gap-5 p-8 space-glass rounded-2xl">
         <button
           className="absolute -right-5 -top-5 rounded-full border-2 border-gray-200 bg-gray-100 p-1 text-gray-400 hover:brightness-90"
           onClick={() => setReviewLessonShown(false)}

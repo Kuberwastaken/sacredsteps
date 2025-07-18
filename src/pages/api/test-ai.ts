@@ -16,6 +16,15 @@ export default async function handler(
   try {
     const { type } = req.body;
 
+    // Check if API key is available
+    if (!process.env.GOOGLE_AI_API_KEY && !process.env.GOOGLE_GENAI_API_KEY) {
+      console.log('No Google AI API key found, client will use fallback content');
+      return res.status(503).json({ 
+        error: "AI service unavailable", 
+        success: false 
+      });
+    }
+
     if (type === "wisdom") {
       const wisdom = await generateDailyWisdom({});
       return res.status(200).json({ success: true, data: wisdom });
@@ -69,6 +78,16 @@ export default async function handler(
 
   } catch (error) {
     console.error("AI generation error:", error);
+    
+    // Check if it's a rate limit or overload error
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    if (errorMessage.includes('overloaded') || errorMessage.includes('503')) {
+      return res.status(503).json({ 
+        success: false, 
+        error: "AI service temporarily overloaded. Please try again in a moment." 
+      });
+    }
+    
     return res.status(500).json({ 
       success: false, 
       error: "Failed to generate AI content" 

@@ -47,6 +47,14 @@ export default async function handler(
       exerciseCount
     });
 
+    // Check if AI generated any lesson content
+    if (!lesson || !lesson.exercises || lesson.exercises.length === 0) {
+      return res.status(503).json({
+        success: false,
+        error: "AI service is currently unavailable. Please try again later."
+      });
+    }
+
     res.status(200).json({
       lesson,
       success: true
@@ -56,7 +64,7 @@ export default async function handler(
     console.error("Lesson generation error:", error);
     res.status(500).json({
       success: false,
-      error: "Failed to generate lesson content"
+      error: "AI lesson generation failed. Please try again later."
     });
   }
 }

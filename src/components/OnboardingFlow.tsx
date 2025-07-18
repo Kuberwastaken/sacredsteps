@@ -5,9 +5,10 @@ import { religions } from '~/utils/religions';
 
 interface OnboardingFlowProps {
   onComplete: () => void;
+  onStartLesson: () => void;
 }
 
-export const OnboardingFlow: React.FC<OnboardingFlowProps> = ({ onComplete }) => {
+export const OnboardingFlow: React.FC<OnboardingFlowProps> = ({ onComplete, onStartLesson }) => {
   const [currentStep, setCurrentStep] = useState(0);
   const [selectedGoal, setSelectedGoal] = useState<string>('');
   const [selectedKnowledge, setSelectedKnowledge] = useState<string>('');
@@ -42,8 +43,12 @@ export const OnboardingFlow: React.FC<OnboardingFlowProps> = ({ onComplete }) =>
   const handleNext = () => {
     if (currentStep < 5) {
       setCurrentStep(currentStep + 1);
+    } else if (currentStep === 5) {
+      // Move to 2-minute lesson screen
+      setCurrentStep(6);
     } else {
-      completeOnboarding();
+      // On 2-minute lesson screen, redirect to actual lesson
+      startFirstLesson();
     }
   };
 
@@ -57,14 +62,27 @@ export const OnboardingFlow: React.FC<OnboardingFlowProps> = ({ onComplete }) =>
     onComplete();
   };
 
+  const startFirstLesson = () => {
+    // Set user preferences first
+    const selectedReligionData = religions.find(r => r.name === selectedReligion);
+    if (selectedReligionData) {
+      setReligion(selectedReligionData);
+    }
+    setName('Sacred Learner');
+    
+    // Complete onboarding and start lesson
+    onComplete();
+    onStartLesson();
+  };
+
   const getProgressWidth = () => {
-    return ((currentStep + 1) / 6) * 100;
+    return ((currentStep + 1) / 7) * 100;
   };
 
   return (
-    <div className="min-h-screen bg-[#1a2b4a] text-white flex flex-col">
+    <div className="min-h-screen bg-transparent space-glass flex flex-col">
       {/* Progress bar */}
-      <div className="w-full bg-gray-600 h-2">
+      <div className="w-full bg-gray-600/30 h-2">
         <div 
           className="bg-green-500 h-2 transition-all duration-300"
           style={{ width: `${getProgressWidth()}%` }}
@@ -81,8 +99,8 @@ export const OnboardingFlow: React.FC<OnboardingFlowProps> = ({ onComplete }) =>
         </button>
       </div>
 
-      {/* Content */}
-      <div className="flex-1 flex flex-col items-center justify-center p-6">
+      {/* Content - flexible to fill remaining space */}
+      <div className="flex-1 flex flex-col items-center justify-center p-6 pb-24">{/* Added pb-24 for button space */}
         
         {/* Step 0: Welcome Screen */}
         {currentStep === 0 && (
@@ -277,8 +295,26 @@ export const OnboardingFlow: React.FC<OnboardingFlowProps> = ({ onComplete }) =>
           </div>
         )}
 
-        {/* Continue Button */}
-        <div className="mt-8 w-full max-w-md">
+        {/* Step 6: 2-Minute Lesson */}
+        {currentStep === 6 && (
+          <div className="text-center max-w-md">
+            <div className="mb-8">
+              <div className="w-32 h-32 bg-green-500 rounded-full mx-auto mb-8 flex items-center justify-center">
+                <span className="text-6xl">🦉</span>
+              </div>
+              <div className="bg-gray-700 rounded-lg p-4 relative mb-8">
+                <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-4 h-4 bg-gray-700 rotate-45"></div>
+                <p className="text-lg">Okay! Here's your first <span className="text-purple-400 font-bold">2 minute</span> lesson.</p>
+              </div>
+            </div>
+          </div>
+        )}
+
+      </div>
+
+      {/* Continue Button - Fixed at bottom */}
+      <div className="fixed bottom-0 left-0 right-0 p-6 bg-transparent backdrop-blur-xl">
+        <div className="max-w-md mx-auto">
           <button
             onClick={handleNext}
             disabled={
@@ -295,7 +331,8 @@ export const OnboardingFlow: React.FC<OnboardingFlowProps> = ({ onComplete }) =>
             }`}
           >
             {currentStep === 3 && selectedGoal ? "I'M COMMITTED" : 
-             currentStep === 5 ? "GET STARTED" : "CONTINUE"}
+             currentStep === 5 ? "GET STARTED" : 
+             currentStep === 6 ? "CONTINUE" : "CONTINUE"}
           </button>
           
           {currentStep === 5 && (

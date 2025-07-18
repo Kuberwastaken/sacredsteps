@@ -29,13 +29,8 @@ export async function getDynamicUsers(currentUserXP: number = 0) {
   } catch (error) {
     console.error("Failed to generate dynamic users:", error);
     
-    // Fallback to minimal hardcoded users if AI fails
-    return [
-      { name: "Alex", xp: Math.max(currentUserXP - 50, 0), isCurrentUser: false, level: 1, streak: 3 },
-      { name: "Jordan", xp: Math.max(currentUserXP - 25, 0), isCurrentUser: false, level: 1, streak: 5 },
-      { name: "Sam", xp: currentUserXP + 25, isCurrentUser: false, level: 2, streak: 7 },
-      { name: "Casey", xp: currentUserXP + 50, isCurrentUser: false, level: 2, streak: 10 }
-    ];
+    // Return empty array instead of hardcoded fallback
+    return [];
   }
 }
 

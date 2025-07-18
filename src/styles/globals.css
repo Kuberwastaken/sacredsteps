@@ -1,6 +1,4 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
 @layer base {
   :root {
@@ -11,20 +9,25 @@
   }
 
   .dark {
-    --background: 26 26 26;
+    --background: 10 15 30;
     --foreground: 255 255 255;
-    --surface: 45 45 45;
-    --border: 64 64 64;
+    --surface: 20 25 45;
+    --border: 45 50 75;
   }
 
   body {
-    @apply bg-white dark:bg-gray-900 text-black dark:text-white transition-colors duration-300;
+    @apply bg-white dark:bg-[#0A0F1E] text-black dark:text-white transition-colors duration-300;
+    background-image: url('/bg-snow.svg');
+    background-repeat: repeat;
+    background-size: 300px 300px;
+    background-attachment: fixed;
+    backdrop-filter: blur(120px);
   }
 }
 
 @layer utilities {
   .bg-theme-surface {
-    @apply bg-gray-50 dark:bg-gray-800;
+    @apply bg-gray-50 dark:bg-[#14192D];
   }
   
   .text-theme-primary {
@@ -36,10 +39,14 @@
   }
   
   .border-theme {
-    @apply border-gray-200 dark:border-gray-700;
+    @apply border-gray-200 dark:border-[#2D324B];
   }
   
   .hover-theme {
-    @apply hover:bg-gray-100 dark:hover:bg-gray-700;
+    @apply hover:bg-gray-100 dark:hover:bg-[#1C2238];
+  }
+
+  .space-glass {
+    @apply backdrop-blur-xl bg-white/10 dark:bg-[#14192D]/40;
   }
 }

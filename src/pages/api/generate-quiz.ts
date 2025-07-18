@@ -23,11 +23,11 @@ export type GenerateQuizResponse = {
   error?: string;
 };
 
-// AI-powered quiz generation with intelligent fallbacks
+// AI-powered quiz generation with pure AI responses
 const generateEnhancedQuiz = async (req: GenerateQuizRequest): Promise<QuizQuestion[]> => {
   const { religion, topic, difficulty, questionCount = 5 } = req;
   
-  // Try AI generation first with enhanced prompting
+  // Try AI generation - no fallbacks, pure AI content
   try {
     const aiResult = await generateReligionQuiz({
       religion,
@@ -47,19 +47,8 @@ const generateEnhancedQuiz = async (req: GenerateQuizRequest): Promise<QuizQuest
   } catch (error) {
     console.error("AI quiz generation failed:", error);
     
-    // If AI fails, generate a minimal fallback with basic prompting
-    const fallbackQuiz: QuizQuestion[] = [
-      {
-        id: "1",
-        type: "multiple_choice",
-        question: `What is a fundamental aspect of ${religion}?`,
-        options: ["Spiritual growth", "Community worship", "Sacred texts", "All of the above"],
-        correctAnswer: 3,
-        explanation: `${religion} encompasses spiritual growth, community worship, and sacred texts.`
-      }
-    ];
-    
-    return fallbackQuiz;
+    // Return empty array instead of fallback - let frontend handle the error
+    return [];
   }
 };
 
@@ -85,6 +74,14 @@ export default async function handler(
     // Generate quiz using enhanced AI function
     const questions = await generateEnhancedQuiz({ religion, topic, difficulty, questionCount });
     
+    // Check if AI generated any questions
+    if (questions.length === 0) {
+      return res.status(503).json({
+        success: false,
+        error: "AI service is currently unavailable. Please try again later."
+      });
+    }
+    
     res.status(200).json({
       questions: questions.slice(0, questionCount),
       success: true
@@ -94,7 +91,7 @@ export default async function handler(
     console.error("Quiz generation error:", error);
     res.status(500).json({
       success: false,
-      error: "Failed to generate quiz"
+      error: "AI quiz generation failed. Please try again later."
     });
   }
 }
