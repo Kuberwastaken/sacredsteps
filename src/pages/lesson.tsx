@@ -18,8 +18,10 @@ import {
 import womanPng from "../../public/woman.png";
 import { useBoundStore } from "~/hooks/useBoundStore";
 import { useRouter } from "next/router";
+import { TeachingPhaseComponent } from "~/components/TeachingPhase";
+import { CompleteLessonStructure, LessonPhase, LessonExercise } from "~/types";
 
-type LessonExercise = {
+type LessonExerciseLocal = {
   type: "SELECT_1_OF_3" | "WRITE_IN_ENGLISH" | "MATCH_PAIRS" | "ARRANGE_ORDER" | "TRUE_FALSE";
   question: string;
   answers?: { icon?: React.ReactNode; name: string }[];
@@ -30,7 +32,7 @@ type LessonExercise = {
 };
 
 // No hardcoded fallbacks - pure AI-generated content only
-const defaultLessonProblems: LessonExercise[] = [];
+const defaultLessonProblems: LessonExerciseLocal[] = [];
 
 const numbersEqual = (a: readonly number[], b: readonly number[]): boolean => {
   return a.length === b.length && a.every((_, i) => a[i] === b[i]);
@@ -52,6 +54,11 @@ const formatTime = (timeMs: number): string => {
 const Lesson: NextPage = () => {
   const router = useRouter();
 
+  // New lesson phase system
+  const [currentPhase, setCurrentPhase] = useState<LessonPhase>('teaching');
+  const [completeLessonData, setCompleteLessonData] = useState<CompleteLessonStructure | null>(null);
+  
+  // Original lesson states
   const [lessonProblem, setLessonProblem] = useState(0);
   const [correctAnswerCount, setCorrectAnswerCount] = useState(0);
   const [incorrectAnswerCount, setIncorrectAnswerCount] = useState(0);
@@ -60,20 +67,82 @@ const Lesson: NextPage = () => {
   const [quitMessageShown, setQuitMessageShown] = useState(false);
 
   const [selectedAnswers, setSelectedAnswers] = useState<number[]>([]);
-  const [lessonProblems, setLessonProblems] = useState<LessonExercise[]>(defaultLessonProblems);
+  const [lessonProblems, setLessonProblems] = useState<LessonExerciseLocal[]>(defaultLessonProblems);
   const [isLoading, setIsLoading] = useState(true);
   const [lessonGenerated, setLessonGenerated] = useState(false);
 
   const religion = useBoundStore((x) => x.religion);
 
-  // Generate AI lesson content on component mount
+  // Generate complete lesson content with teaching phase
   useEffect(() => {
-    // Only generate lesson content once
+    console.log('useEffect triggered', { lessonGenerated, religionName: religion.name });
     if (lessonGenerated) return;
+    if (!religion.name) {
+      console.log('Religion not loaded yet, skipping lesson generation');
+      return;
+    }
 
-    const generateLessonContent = async () => {
+    const generateCompleteLessonContent = async () => {
       try {
+        console.log('Starting complete lesson generation for', religion.name);
         setIsLoading(true);
+        const response = await fetch('/api/generate-complete-lesson', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            religion: religion.name,
+            topic: 'Basic Concepts',
+            difficulty: 'beginner',
+            duration: 15,
+            conceptCount: 3,
+            exerciseCount: 4,
+            quizCount: 5
+          }),
+        });
+
+        if (!response.ok) {
+          console.warn(`Complete lesson API returned ${response.status}: ${response.statusText}`);
+          setCompleteLessonData(null);
+          return;
+        }
+
+        const data = await response.json();
+        if (data.success && data.lesson) {
+          setCompleteLessonData(data.lesson);
+          
+          // Convert practice exercises to legacy format for compatibility
+          const exercises = data.lesson.practiceExercises.map((exercise: any) => ({
+            type: exercise.type,
+            question: exercise.question,
+            answers: exercise.options ? exercise.options.map((opt: any) => ({ 
+              name: typeof opt === 'string' ? opt : opt.text || opt 
+            })) : undefined,
+            options: exercise.options,
+            answerTiles: exercise.answerTiles || exercise.wordTiles,
+            correctAnswer: exercise.correctAnswer,
+            explanation: exercise.explanation
+          }));
+          setLessonProblems(exercises);
+          console.log('Successfully loaded complete AI lesson with teaching phase');
+        } else {
+          console.warn('Complete lesson generation failed, falling back to simple lesson');
+          // Fallback to simple lesson generation
+          await generateSimpleLessonContent();
+        }
+      } catch (error) {
+        console.error('Failed to generate complete lesson:', error);
+        // Fallback to simple lesson generation
+        await generateSimpleLessonContent();
+      } finally {
+        setIsLoading(false);
+        setLessonGenerated(true);
+      }
+    };
+
+    const generateSimpleLessonContent = async () => {
+      try {
         const response = await fetch('/api/generate-lesson', {
           method: 'POST',
           headers: {
@@ -89,15 +158,14 @@ const Lesson: NextPage = () => {
         });
 
         if (!response.ok) {
-          console.warn(`AI lesson API returned ${response.status}: ${response.statusText}`);
+          console.warn(`Simple lesson API returned ${response.status}: ${response.statusText}`);
           setLessonProblems([]);
           return;
         }
 
         const data = await response.json();
         if (data.success && data.lesson && data.lesson.exercises) {
-          // Convert AI exercise format to our lesson format
-          const aiExercises = data.lesson.exercises.map((exercise: any) => ({
+          const exercises = data.lesson.exercises.map((exercise: any) => ({
             type: exercise.type,
             question: exercise.question,
             answers: exercise.options ? exercise.options.map((opt: any) => ({ 
@@ -108,22 +176,21 @@ const Lesson: NextPage = () => {
             correctAnswer: exercise.correctAnswer,
             explanation: exercise.explanation
           }));
-          setLessonProblems(aiExercises);
-          console.log('Successfully loaded AI-generated lesson content');
+          setLessonProblems(exercises);
+          // Skip teaching phase if no complete lesson data
+          setCurrentPhase('practice');
+          console.log('Successfully loaded simple AI lesson content');
         } else {
-          console.warn('AI lesson generation failed, no content available');
+          console.warn('Simple lesson generation failed, no content available');
           setLessonProblems([]);
         }
       } catch (error) {
-        console.error('Failed to generate lesson content:', error);
+        console.error('Failed to generate simple lesson:', error);
         setLessonProblems([]);
-      } finally {
-        setIsLoading(false);
-        setLessonGenerated(true);
       }
     };
 
-    generateLessonContent();
+    generateCompleteLessonContent();
   }, [religion.name, lessonGenerated]);
 
   const startTime = useRef(Date.now());
@@ -132,6 +199,29 @@ const Lesson: NextPage = () => {
   const [questionResults, setQuestionResults] = useState<QuestionResult[]>([]);
   const [reviewLessonShown, setReviewLessonShown] = useState(false);
 
+  // Handle teaching phase completion
+  const handleTeachingPhaseComplete = () => {
+    setCurrentPhase('practice');
+  };
+
+  // Handle practice phase completion
+  const handlePracticePhaseComplete = () => {
+    setCurrentPhase('assessment');
+  };
+
+  // Teaching Phase Render
+  if (currentPhase === 'teaching' && completeLessonData?.teachingPhase) {
+    return (
+      <TeachingPhaseComponent
+        teachingPhase={completeLessonData.teachingPhase}
+        onComplete={handleTeachingPhaseComplete}
+        currentStep={1}
+        totalSteps={3}
+      />
+    );
+  }
+
+  // Practice Phase Render (current lesson logic)
   const problem = lessonProblems[lessonProblem] ?? null;
   
   if (!problem || lessonProblems.length === 0) {

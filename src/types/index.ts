@@ -9,6 +9,46 @@ export type Quiz = {
   quiz: QuizQuestion[];
 };
 
+// Teaching Phase Types - Duolingo-style concept introduction
+export type ConceptCard = {
+  id: string;
+  title: string;
+  description: string;
+  keyPoints: string[];
+  example?: string;
+  visualDescription?: string; // For AI image generation
+  relatedTerms?: { term: string; definition: string }[];
+};
+
+export type TeachingPhase = {
+  concepts: ConceptCard[];
+  introduction: string;
+  learningObjectives: string[];
+};
+
+export type LessonPhase = 'teaching' | 'practice' | 'assessment';
+
+export type CompleteLessonStructure = {
+  id: string;
+  title: string;
+  topic: string;
+  difficulty: 'beginner' | 'intermediate' | 'advanced';
+  teachingPhase: TeachingPhase;
+  practiceExercises: LessonExercise[];
+  assessmentQuiz: QuizQuestion[];
+  estimatedTime: number; // in minutes
+};
+
+export type LessonExercise = {
+  type: "SELECT_1_OF_3" | "WRITE_IN_ENGLISH" | "MATCH_PAIRS" | "ARRANGE_ORDER" | "TRUE_FALSE";
+  question: string;
+  answers?: { icon?: React.ReactNode; name: string }[];
+  options?: string[];
+  answerTiles?: string[];
+  correctAnswer: number | number[];
+  explanation?: string;
+};
+
 // Base structure for any exercise
 export interface Exercise {
   id: string;
