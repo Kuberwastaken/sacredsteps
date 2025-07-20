@@ -3,6 +3,7 @@ import type { QuizQuestion } from "~/pages/api/generate-quiz";
 import { useBoundStore } from "~/hooks/useBoundStore";
 import { LessonTopBarHeart, LessonTopBarEmptyHeart, CloseSvg } from "./Svgs";
 import Link from "next/link";
+import { MatchPairsExercise } from "./exercises/match-pairs-exercise";
 
 type QuizComponentProps = {
   religion: string;
@@ -13,8 +14,8 @@ type QuizComponentProps = {
 export const QuizComponent = ({ religion, topic, onComplete }: QuizComponentProps) => {
   const [questions, setQuestions] = useState<QuizQuestion[]>([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-  const [selectedAnswer, setSelectedAnswer] = useState<string | number | null>(null);
-  const [userAnswers, setUserAnswers] = useState<(string | number)[]>([]);
+  const [selectedAnswer, setSelectedAnswer] = useState<string | number | { term: string; definition: string }[] | null>(null);
+  const [userAnswers, setUserAnswers] = useState<(string | number | { term: string; definition: string }[])[]>([]);
   const [showFeedback, setShowFeedback] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -63,7 +64,7 @@ export const QuizComponent = ({ religion, topic, onComplete }: QuizComponentProp
   const currentQuestion = questions[currentQuestionIndex];
   const isLastQuestion = currentQuestionIndex === questions.length - 1;
 
-  const handleAnswerSelect = (answer: string | number) => {
+  const handleAnswerSelect = (answer: string | number | { term: string; definition: string }[]) => {
     setSelectedAnswer(answer);
   };
 
@@ -75,7 +76,29 @@ export const QuizComponent = ({ religion, topic, onComplete }: QuizComponentProp
     
     // Check if answer is correct and lose heart if incorrect
     const currentQuestion = questions[currentQuestionIndex];
-    const isCorrect = currentQuestion && selectedAnswer === currentQuestion.correctAnswer;
+    let isCorrect = false;
+    
+    if (currentQuestion?.type === "match_pairs") {
+      // For match pairs, check if all pairs are correctly matched
+      const userPairs = selectedAnswer as unknown as { term: string; definition: string }[] | null;
+      const correctPairs = currentQuestion.pairs || [];
+      
+      if (!userPairs || !Array.isArray(userPairs)) {
+        isCorrect = false;
+      } else {
+        isCorrect = userPairs.length === correctPairs.length && 
+                    userPairs.every(userPair => 
+                      correctPairs.some(correctPair => 
+                        correctPair.term === userPair.term && 
+                        correctPair.definition === userPair.definition
+                      )
+                    );
+      }
+    } else {
+      // For other question types
+      isCorrect = Boolean(currentQuestion && selectedAnswer === currentQuestion.correctAnswer);
+    }
+    
     if (!isCorrect) {
       loseHeart();
     }
@@ -86,7 +109,26 @@ export const QuizComponent = ({ religion, topic, onComplete }: QuizComponentProp
       if (isLastQuestion) {
         // Calculate score and complete quiz
         const score = newUserAnswers.reduce((acc: number, answer, index) => {
-          return acc + (answer === questions[index]?.correctAnswer ? 1 : 0);
+          const question = questions[index];
+          if (!question) return acc;
+          
+          if (question.type === "match_pairs") {
+            // For match pairs, check if all pairs are correctly matched
+            const userPairs = answer as { term: string; definition: string }[];
+            const correctPairs = question.pairs || [];
+            const isCorrect = Array.isArray(userPairs) && 
+              userPairs.length === correctPairs.length && 
+              userPairs.every(userPair => 
+                correctPairs.some(correctPair => 
+                  correctPair.term === userPair.term && 
+                  correctPair.definition === userPair.definition
+                )
+              );
+            return acc + (isCorrect ? 1 : 0);
+          } else {
+            // For other question types
+            return acc + (answer === question.correctAnswer ? 1 : 0);
+          }
         }, 0);
         onComplete(score, questions.length);
       } else {
@@ -247,6 +289,22 @@ export const QuizComponent = ({ religion, topic, onComplete }: QuizComponentProp
                 {option}
               </button>
             ))}
+          </div>
+        )}
+
+        {currentQuestion.type === "match_pairs" && currentQuestion.pairs && (
+          <div className="bg-white/10 rounded-lg p-4">
+            <MatchPairsExercise
+              exercise={{
+                id: currentQuestion.id,
+                prompt: currentQuestion.question,
+                type: 'match-pairs',
+                data: currentQuestion.pairs
+              }}
+              userAnswer={selectedAnswer as { term: string; definition: string }[] | null}
+              onAnswerChange={(answer) => handleAnswerSelect(answer)}
+              disabled={showFeedback}
+            />
           </div>
         )}
 
