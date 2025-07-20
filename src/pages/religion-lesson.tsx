@@ -5,11 +5,6 @@ import { useBoundStore } from "~/hooks/useBoundStore";
 import { QuizComponent } from "~/components/QuizComponent";
 import { religionUnits } from "~/utils/religion-units";
 import Link from "next/link";
-import {
-  CloseSvg,
-  LessonTopBarHeart,
-  LessonTopBarEmptyHeart,
-} from "~/components/Svgs";
 
 const ReligionLesson: NextPage = () => {
   const router = useRouter();
@@ -19,8 +14,12 @@ const ReligionLesson: NextPage = () => {
   const increaseLessonsCompleted = useBoundStore((x) => x.increaseLessonsCompleted);
   const increaseXp = useBoundStore((x) => x.increaseXp);
   const increaseLingots = useBoundStore((x) => x.increaseLingots);
+  
+  // Hearts system
+  const hearts = useBoundStore((x) => x.hearts);
+  const loseHeart = useBoundStore((x) => x.loseHeart);
+  const resetHearts = useBoundStore((x) => x.resetHearts);
 
-  const [hearts] = useState(3);
   const [showResult, setShowResult] = useState(false);
   const [finalScore, setFinalScore] = useState({ score: 0, total: 0 });
 
@@ -39,6 +38,11 @@ const ReligionLesson: NextPage = () => {
 
   const lessonIndex = parseInt(lessonStr || "0");
   const currentLesson = currentUnit?.tiles[lessonIndex];
+
+  // Reset hearts when starting a new lesson
+  useEffect(() => {
+    resetHearts();
+  }, [resetHearts]);
 
   useEffect(() => {
     if (!religionUnit || !currentUnit || !currentLesson) {
@@ -136,51 +140,9 @@ const ReligionLesson: NextPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Top Bar */}
-      <div className="bg-white shadow-sm border-b">
-        <div className="max-w-4xl mx-auto px-4 py-3 flex items-center justify-between">
-          <Link
-            href={`/${religionParamStr || ""}`}
-            className="text-gray-600 hover:text-gray-800 transition-colors"
-          >
-            <CloseSvg className="w-6 h-6" />
-          </Link>
-          
-          <div className="flex-1 mx-8">
-            <div className="bg-gray-200 rounded-full h-3">
-              <div 
-                className="bg-green-500 h-3 rounded-full transition-all duration-300"
-                style={{ width: `${((lessonIndex + 1) / currentUnit.tiles.length) * 100}%` }}
-              ></div>
-            </div>
-          </div>
-
-          <div className="flex items-center space-x-2">
-            {Array.from({ length: 3 }).map((_, i) => (
-              <div key={i}>
-                {i < hearts ? (
-                  <LessonTopBarHeart className="w-8 h-8" />
-                ) : (
-                  <LessonTopBarEmptyHeart className="w-8 h-8" />
-                )}
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-
+    <div className="min-h-screen bg-gradient-to-br from-blue-900 via-purple-900 to-indigo-900">
       {/* Lesson Content */}
       <div className="max-w-4xl mx-auto p-6">
-        <div className="mb-8">
-          <h1 className="text-2xl font-bold text-gray-800 mb-2">
-            {currentUnit.description}
-          </h1>
-          <h2 className="text-lg text-gray-600">
-            {currentLesson.type === "treasure" ? "Bonus Lesson" : currentLesson.description}
-          </h2>
-        </div>
-
         <QuizComponent
           religion={religion.name}
           topic={currentLesson.type === "treasure" ? "Review" : currentLesson.description || "General"}

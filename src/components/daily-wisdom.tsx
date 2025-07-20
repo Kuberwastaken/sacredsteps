@@ -3,6 +3,7 @@ import {useEffect, useState} from 'react';
 
 export default function DailyWisdom() {
   const [wisdom, setWisdom] = useState<string>('The free, fun, and effective way to learn about religions!');
+  const [religion, setReligion] = useState<string>('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   
@@ -29,6 +30,7 @@ export default function DailyWisdom() {
         const data = await response.json();
         if (data.success && data.wisdom) {
           setWisdom(`"${data.wisdom.saying}"`);
+          setReligion(data.wisdom.religion);
         } else {
           throw new Error(data.error || 'Unknown error');
         }
@@ -36,6 +38,7 @@ export default function DailyWisdom() {
         console.log('Daily wisdom generation failed:', error);
         setError('Unable to generate daily wisdom. Please try again later.');
         setWisdom(''); // Clear any previous wisdom
+        setReligion(''); // Clear any previous religion
       } finally {
         setLoading(false);
       }
@@ -71,7 +74,7 @@ export default function DailyWisdom() {
         {wisdom}
       </p>
       <p className="text-sm text-white/75 italic">
-        Daily wisdom refreshes each visit
+        {religion ? `${religion} wisdom` : 'Daily wisdom refreshes each visit'}
       </p>
     </div>
   );

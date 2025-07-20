@@ -1,5 +1,8 @@
 import { useState, useEffect } from "react";
 import type { QuizQuestion } from "~/pages/api/generate-quiz";
+import { useBoundStore } from "~/hooks/useBoundStore";
+import { LessonTopBarHeart, LessonTopBarEmptyHeart, CloseSvg } from "./Svgs";
+import Link from "next/link";
 
 type QuizComponentProps = {
   religion: string;
@@ -15,6 +18,11 @@ export const QuizComponent = ({ religion, topic, onComplete }: QuizComponentProp
   const [showFeedback, setShowFeedback] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  // Hearts system
+  const hearts = useBoundStore((x) => x.hearts);
+  const loseHeart = useBoundStore((x) => x.loseHeart);
+  const resetHearts = useBoundStore((x) => x.resetHearts);
 
   // Load quiz questions
   useEffect(() => {
@@ -64,6 +72,14 @@ export const QuizComponent = ({ religion, topic, onComplete }: QuizComponentProp
 
     const newUserAnswers = [...userAnswers, selectedAnswer];
     setUserAnswers(newUserAnswers);
+    
+    // Check if answer is correct and lose heart if incorrect
+    const currentQuestion = questions[currentQuestionIndex];
+    const isCorrect = currentQuestion && selectedAnswer === currentQuestion.correctAnswer;
+    if (!isCorrect) {
+      loseHeart();
+    }
+    
     setShowFeedback(true);
 
     setTimeout(() => {
@@ -81,6 +97,32 @@ export const QuizComponent = ({ religion, topic, onComplete }: QuizComponentProp
       }
     }, 2000);
   };
+
+  // Game over if hearts reach 0
+  if (hearts <= 0) {
+    return (
+      <div className="flex items-center justify-center min-h-[400px]">
+        <div className="text-center space-glass p-8 rounded-lg max-w-md">
+          <div className="text-6xl mb-4">💔</div>
+          <h2 className="text-2xl font-bold text-red-600 mb-4">Out of Hearts!</h2>
+          <p className="text-white/80 mb-6">
+            You've run out of hearts. Take a break and try again later!
+          </p>
+          <div className="flex gap-4 justify-center">
+            <Link href="/learn" className="px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white rounded">
+              Back to Lessons
+            </Link>
+            <button 
+              onClick={resetHearts}
+              className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded"
+            >
+              Reset Hearts (Dev)
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   if (loading) {
     return (
@@ -118,24 +160,52 @@ export const QuizComponent = ({ religion, topic, onComplete }: QuizComponentProp
   const isCorrect = selectedAnswer === currentQuestion.correctAnswer;
 
   return (
-    <div className="max-w-2xl mx-auto p-6 bg-white rounded-lg shadow-lg">
+    <div className="max-w-2xl mx-auto p-6 bg-transparent">
+      {/* Top Bar with Progress and Hearts */}
       <div className="mb-6">
-        <div className="flex justify-between items-center mb-4">
-          <span className="text-sm text-gray-500">
-            Question {currentQuestionIndex + 1} of {questions.length}
-          </span>
-          <div className="w-full max-w-xs bg-gray-200 rounded-full h-2 ml-4">
-            <div 
-              className="bg-blue-500 h-2 rounded-full transition-all duration-300"
-              style={{ width: `${((currentQuestionIndex + 1) / questions.length) * 100}%` }}
-            ></div>
+        <div className="flex items-center gap-4 mb-4">
+          {/* Close Button */}
+          <Link href="/learn" className="text-gray-400 hover:text-white">
+            <CloseSvg />
+            <span className="sr-only">Exit lesson</span>
+          </Link>
+          
+          {/* Progress Bar */}
+          <div
+            className="h-4 grow rounded-full bg-gray-200/30"
+            role="progressbar"
+            aria-valuemin={0}
+            aria-valuemax={1}
+            aria-valuenow={(currentQuestionIndex + 1) / questions.length}
+          >
+            <div
+              className={
+                "h-full rounded-full bg-green-500 transition-all duration-700 " +
+                (currentQuestionIndex > 0 ? "px-2 pt-1 " : "")
+              }
+              style={{
+                width: `${((currentQuestionIndex + 1) / questions.length) * 100}%`,
+              }}
+            >
+              <div className="h-[5px] w-full rounded-full bg-green-400"></div>
+            </div>
           </div>
+          
+          {/* Hearts Display */}
+          {[1, 2, 3, 4, 5].map((heart) => {
+            if (heart <= hearts) {
+              return <LessonTopBarHeart key={heart} />;
+            }
+            return <LessonTopBarEmptyHeart key={heart} />;
+          })}
         </div>
-        
-        <h2 className="text-xl font-bold text-gray-800 mb-4">
+      </div>
+
+      {/* Question Content */}
+      <div className="space-glass p-8 rounded-lg">
+        <h2 className="text-xl font-bold text-white mb-6">
           {currentQuestion.question}
         </h2>
-      </div>
 
       <div className="space-y-3 mb-6">
         {currentQuestion.type === "multiple_choice" && currentQuestion.options?.map((option, index) => (
@@ -229,6 +299,7 @@ export const QuizComponent = ({ religion, topic, onComplete }: QuizComponentProp
       >
         {showFeedback ? "Loading next question..." : (isLastQuestion ? "Finish Quiz" : "Submit Answer")}
       </button>
+      </div>
     </div>
   );
 };

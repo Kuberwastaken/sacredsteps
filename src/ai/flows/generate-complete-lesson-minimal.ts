@@ -90,7 +90,7 @@ Please provide:
 2. 3 key learning points about ${topic}
 3. One simple example of how this applies to daily life
 
-Keep it very short and simple. No special formatting.`;
+Keep it very short and simple. No special formatting, em dashes, or unusual punctuation.`;
 
           const result = await ai.generate({
             model: 'googleai/gemini-2.0-flash-exp',

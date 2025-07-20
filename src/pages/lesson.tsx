@@ -77,6 +77,14 @@ const Lesson: NextPage = () => {
   const [lessonGenerated, setLessonGenerated] = useState(false);
 
   const religion = useBoundStore((x) => x.religion);
+  const heartsState = useBoundStore((x) => x.hearts);
+  const loseHeart = useBoundStore((x) => x.loseHeart);
+  const resetHearts = useBoundStore((x) => x.resetHearts);
+
+  // Reset hearts when starting a new lesson
+  useEffect(() => {
+    resetHearts();
+  }, [resetHearts]);
 
   // Generate complete lesson content with teaching phase
   useEffect(() => {
@@ -251,11 +259,8 @@ const Lesson: NextPage = () => {
 
   const totalCorrectAnswersNeeded = lessonProblems.length;
 
-  const hearts =
-    "fast-forward" in router.query &&
-    !isNaN(Number(router.query["fast-forward"]))
-      ? 3 - incorrectAnswerCount
-      : null;
+  // Always use hearts system instead of just fast-forward mode
+  const hearts = heartsState;
 
   const problemCorrectAnswer = problem.correctAnswer;
   const isAnswerCorrect = Array.isArray(problemCorrectAnswer)
@@ -280,6 +285,7 @@ const Lesson: NextPage = () => {
       setCorrectAnswerCount((x) => x + 1);
     } else {
       setIncorrectAnswerCount((x) => x + 1);
+      loseHeart(); // Lose a heart on incorrect answer
     }
     setQuestionResults((questionResults) => [
       ...questionResults,
@@ -317,7 +323,7 @@ const Lesson: NextPage = () => {
 
   const unitNumber = Number(router.query["fast-forward"]);
 
-  if (hearts !== null && hearts < 0 && !correctAnswerShown) {
+  if (hearts !== null && hearts <= 0 && !correctAnswerShown) {
     return (
       <LessonFastForwardEndFail
         unitNumber={unitNumber}
@@ -459,7 +465,7 @@ const ProgressBar = ({
         </div>
       </div>
       {hearts !== null &&
-        [1, 2, 3].map((heart) => {
+        [1, 2, 3, 4, 5].map((heart) => {
           if (heart <= hearts) {
             return <LessonTopBarHeart key={heart} />;
           }

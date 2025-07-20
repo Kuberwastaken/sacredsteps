@@ -20,6 +20,8 @@ import type { LessonProgressSlice } from "~/stores/createLessonProgressStore";
 import { createLessonProgressSlice } from "~/stores/createLessonProgressStore";
 import type { ThemeSlice } from "~/stores/createThemeStore";
 import { createThemeSlice } from "~/stores/createThemeStore";
+import type { HeartsSlice } from "~/stores/createHeartsStore";
+import { createHeartsSlice } from "~/stores/createHeartsStore";
 
 type BoundState = GoalXpSlice &
   ReligionSlice &
@@ -30,7 +32,8 @@ type BoundState = GoalXpSlice &
   UserSlice &
   XpSlice &
   LessonProgressSlice &
-  ThemeSlice;
+  ThemeSlice &
+  HeartsSlice;
 
 export type BoundStateCreator<SliceState> = StateCreator<
   BoundState,
@@ -50,4 +53,5 @@ export const useBoundStore = create<BoundState>((...args) => ({
   ...createXpSlice(...args),
   ...createLessonProgressSlice(...args),
   ...createThemeSlice(...args),
+  ...createHeartsSlice(...args),
 }));
