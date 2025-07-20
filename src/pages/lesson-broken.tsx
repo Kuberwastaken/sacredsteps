@@ -8,43 +8,39 @@ import { CloseSvg } from "~/components/Svgs";
 import { TopBar } from "~/components/TopBar";
 import { BottomBar } from "~/components/BottomBar";
 
-type SimpleExercise = {
-  type: 'multiple-choice' | 'true-false';
-  question: string;
-  options: string[];
-  correctAnswer: number;
-  explanation: string;
-};
+import { MultipleChoiceExercise as MultipleChoiceComponent } from "~/components/exercises/multiple-choice-exercise";
+import { TrueFalseExercise as TrueFalseComponent } from "~/components/exercises/true-false-exercise";
+import { FillBlankExercise as FillBlankComponent } from "~/components/exercises/fill-blank-exercise";
+import { MatchPairsExercise as MatchPairsComponent } from "~/components/exercises/match-pairs-exercise";
+import { ImageAssocExercise as ImageAssocComponent } from "~/components/exercises/image-assoc-exercise";
+
+import type { MultipleChoiceExercise, TrueFalseExercise, AnyExercise } from "~/types/index";
 
 const Lesson: NextPage = () => {
   const router = useRouter();
   const [currentExercise, setCurrentExercise] = useState(0);
-  const [exercises, setExercises] = useState<SimpleExercise[]>([]);
+  const [exercises, setExercises] = useState<AnyExercise[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [correctCount, setCorrectCount] = useState(0);
   const [showResult, setShowResult] = useState(false);
   const [isCorrect, setIsCorrect] = useState(false);
-  const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
+  const [selectedAnswer, setSelectedAnswer] = useState<string | number | null>(null);
   
   const religion = useBoundStore((x) => x.religion);
   const hearts = useBoundStore((x) => x.hearts);
   const loseHeart = useBoundStore((x) => x.loseHeart);
+  const streak = useBoundStore((x) => x.streak);
+  const xp = useBoundStore((x) => x.xp);
 
   // Generate lesson content - using hardcoded exercises for now
   useEffect(() => {
-    console.log('Lesson page - religion:', religion);
-    if (!religion?.name) {
-      console.log('No religion selected, redirecting to learn page');
-      router.push('/learn'); // Redirect to learn if no religion selected
-      return;
-    }
+    if (!religion.name) return;
     
-    console.log('Generating lesson content for:', religion.name);
     const generateLessonContent = () => {
       setIsLoading(true);
       
       // Create exercises based on the selected religion
-      const exercises: SimpleExercise[] = [];
+      const exercises: Exercise[] = [];
       
       switch (religion.name) {
         case 'Christianity':
@@ -230,14 +226,12 @@ const Lesson: NextPage = () => {
     setTimeout(generateLessonContent, 500);
   }, [religion.name]);
 
-  const handleAnswer = (answerIndex: number) => {
+  const handleAnswer = (answer: string | number) => {
     if (showResult) return;
     
-    setSelectedAnswer(answerIndex);
+    setSelectedAnswer(answer);
     const exercise = exercises[currentExercise];
-    if (!exercise) return;
-    
-    const correct = answerIndex === exercise.correctAnswer;
+    const correct = answer === exercise.correctAnswer;
     
     setIsCorrect(correct);
     setShowResult(true);
@@ -270,7 +264,7 @@ const Lesson: NextPage = () => {
             <p className="text-white text-lg">Preparing your lesson...</p>
           </div>
         </div>
-        <BottomBar selectedTab={null} />
+        <BottomBar />
       </div>
     );
   }
@@ -293,14 +287,12 @@ const Lesson: NextPage = () => {
             </Link>
           </div>
         </div>
-        <BottomBar selectedTab={null} />
+        <BottomBar />
       </div>
     );
   }
 
   const exercise = exercises[currentExercise];
-  if (!exercise) return null;
-  
   const progress = ((currentExercise + 1) / exercises.length) * 100;
 
   return (
@@ -361,39 +353,57 @@ const Lesson: NextPage = () => {
               </p>
             </div>
 
-            {/* Exercise Options */}
-            <div className="mb-8 space-y-3">
-              {exercise.options.map((option, index) => (
-                <button
-                  key={index}
-                  onClick={() => handleAnswer(index)}
-                  disabled={showResult}
-                  className={`w-full p-4 rounded-xl text-left transition-all duration-200 ${
-                    showResult
-                      ? index === exercise.correctAnswer
-                        ? 'bg-green-500/30 border-green-500 text-white border-2'
-                        : index === selectedAnswer && index !== exercise.correctAnswer
-                        ? 'bg-red-500/30 border-red-500 text-white border-2'
-                        : 'bg-white/10 border border-white/20 text-white/70'
-                      : 'bg-white/10 border border-white/20 text-white hover:bg-white/20 hover:border-white/40'
-                  }`}
-                >
-                  <div className="flex items-center gap-3">
-                    <div className={`w-8 h-8 rounded-full border-2 flex items-center justify-center text-sm font-semibold ${
-                      showResult
-                        ? index === exercise.correctAnswer
-                          ? 'border-green-500 bg-green-500 text-white'
-                          : index === selectedAnswer && index !== exercise.correctAnswer
-                          ? 'border-red-500 bg-red-500 text-white'
-                          : 'border-white/30 text-white/50'
-                        : 'border-white/50 text-white/70'
-                    }`}>
-                      {String.fromCharCode(65 + index)}
-                    </div>
-                    <span className="text-lg">{option}</span>
-                  </div>
-                </button>
-              ))}
+            {/* Exercise Component */}
+            <div className="mb-8">
+              {exercise.type === 'multiple-choice' && (
+                <MultipleChoiceExercise
+                  exercise={exercise}
+                  selectedAnswer={selectedAnswer}
+                  onAnswerSelect={handleAnswer}
+                  showResult={showResult}
+                  isCorrect={isCorrect}
+                />
+              )}
+              
+              {exercise.type === 'true-false' && (
+                <TrueFalseExercise
+                  exercise={exercise}
+                  selectedAnswer={selectedAnswer}
+                  onAnswerSelect={handleAnswer}
+                  showResult={showResult}
+                  isCorrect={isCorrect}
+                />
+              )}
+              
+              {exercise.type === 'fill-blank' && (
+                <FillBlankExercise
+                  exercise={exercise}
+                  selectedAnswer={selectedAnswer as string}
+                  onAnswerSelect={handleAnswer}
+                  showResult={showResult}
+                  isCorrect={isCorrect}
+                />
+              )}
+              
+              {exercise.type === 'match-pairs' && (
+                <MatchPairsExercise
+                  exercise={exercise}
+                  selectedAnswer={selectedAnswer}
+                  onAnswerSelect={handleAnswer}
+                  showResult={showResult}
+                  isCorrect={isCorrect}
+                />
+              )}
+              
+              {exercise.type === 'image-association' && (
+                <ImageAssocExercise
+                  exercise={exercise}
+                  selectedAnswer={selectedAnswer}
+                  onAnswerSelect={handleAnswer}
+                  showResult={showResult}
+                  isCorrect={isCorrect}
+                />
+              )}
             </div>
 
             {/* Result Feedback */}
@@ -416,9 +426,11 @@ const Lesson: NextPage = () => {
                   </h3>
                 </div>
                 
-                <p className="text-white/90 text-sm">
-                  {exercise.explanation}
-                </p>
+                {exercise.explanation && (
+                  <p className="text-white/90 text-sm">
+                    {exercise.explanation}
+                  </p>
+                )}
               </div>
             )}
 
@@ -439,7 +451,7 @@ const Lesson: NextPage = () => {
         </div>
       </div>
 
-      <BottomBar selectedTab={null} />
+      <BottomBar />
     </div>
   );
 };
