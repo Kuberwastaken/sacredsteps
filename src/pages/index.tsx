@@ -27,11 +27,12 @@ const Home: NextPage = () => {
     // Check localStorage for onboarding completion (only on client-side)
     if (typeof window !== 'undefined') {
       const hasCompletedOnboarding = localStorage.getItem('onboarding_completed');
-      if (hasCompletedOnboarding === 'true' && name && religion.name) {
+      // Only check onboarding completion flag - user data is now persisted separately
+      if (hasCompletedOnboarding === 'true') {
         setShowOnboarding(false);
       }
     }
-  }, [name, religion]);
+  }, []); // Remove dependency on name and religion to prevent re-showing onboarding
 
   const handleOnboardingComplete = () => {
     if (typeof window !== 'undefined') {
@@ -42,6 +43,16 @@ const Home: NextPage = () => {
 
   const handleStartLesson = () => {
     router.push('/lesson');
+  };
+
+  // Reset onboarding for testing (you can remove this in production)
+  const resetOnboarding = () => {
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('onboarding_completed');
+      localStorage.removeItem('user_name');
+      localStorage.removeItem('selected_religion');
+      window.location.reload();
+    }
   };
 
   // Show onboarding flow for new users
@@ -67,6 +78,15 @@ const Home: NextPage = () => {
             >
               Continue Learning
             </Link>
+            {/* Development only: Reset onboarding button */}
+            {process.env.NODE_ENV === 'development' && (
+              <button
+                onClick={resetOnboarding}
+                className="text-xs text-gray-400 hover:text-white underline mt-2"
+              >
+                Reset Onboarding (Dev Only)
+              </button>
+            )}
           </div>
         </div>
       </div>

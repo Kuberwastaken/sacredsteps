@@ -28,7 +28,7 @@ export default function DailyWisdom() {
         
         const data = await response.json();
         if (data.success && data.wisdom) {
-          setWisdom(`"${data.wisdom.saying}" — ${data.wisdom.religion} wisdom`);
+          setWisdom(`"${data.wisdom.saying}"`);
         } else {
           throw new Error(data.error || 'Unknown error');
         }

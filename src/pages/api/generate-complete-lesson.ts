@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { generateCompleteLesson } from '~/ai/flows/generate-complete-lesson';
+import generateCompleteLessonFlow from '~/ai/flows/generate-complete-lesson-minimal';
 
 interface GenerateCompleteLessonRequest {
   religion: string;
@@ -46,8 +46,10 @@ export default async function handler(
       });
     }
 
-    // Generate complete lesson structure using AI
-    const result = await generateCompleteLesson({
+    console.log('Using MINIMAL AI lesson generation to avoid rate limits');
+
+    // Generate complete lesson structure using MINIMAL AI calls
+    const result = await generateCompleteLessonFlow({
       religion,
       topic,
       difficulty: difficulty || 'beginner',
@@ -65,13 +67,15 @@ export default async function handler(
       });
     }
 
+    console.log('Successfully generated lesson with minimal AI usage');
+
     res.status(200).json({
       lesson: result.lesson,
       success: true
     });
 
   } catch (error) {
-    console.error('Complete lesson generation error:', error);
+    console.error('Minimal lesson generation error:', error);
     res.status(500).json({
       success: false,
       error: 'AI lesson generation failed. Please try again later.'

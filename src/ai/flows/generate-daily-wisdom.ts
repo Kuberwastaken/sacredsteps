@@ -73,6 +73,8 @@ Choose ONE religion randomly from this diverse list (ensure true randomness - do
 - Should inspire contemplation and positive action
 - Avoid sectarian language or exclusive claims
 - Focus on wisdom that builds bridges between people
+- Do not include em dashes (—) or attribution marks in the saying itself
+- Keep the saying clean and simple without punctuation marks that look awkward
 
 **Cultural Sensitivity:**
 - Represent each tradition's highest aspirations

@@ -13,11 +13,16 @@ export type UserSlice = {
 };
 
 export const createUserSlice: BoundStateCreator<UserSlice> = (set) => ({
-  name: "",
+  name: typeof window !== 'undefined' ? localStorage.getItem('user_name') || "" : "",
   username: "",
   joinedAt: dayjs(),
   loggedIn: false,
-  setName: (name: string) => set(() => ({ name })),
+  setName: (name: string) => {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('user_name', name);
+    }
+    set(() => ({ name }));
+  },
   setUsername: (username: string) => set(() => ({ username })),
   logIn: () => set(() => ({ loggedIn: true })),
   logOut: () => set(() => ({ loggedIn: false })),

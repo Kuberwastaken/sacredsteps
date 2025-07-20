@@ -54,6 +54,11 @@ const formatTime = (timeMs: number): string => {
 const Lesson: NextPage = () => {
   const router = useRouter();
 
+  // All hooks must be at the top level - never after conditional returns
+  const [isStartingLesson, setIsStartingLesson] = useState(true);
+  const [questionResults, setQuestionResults] = useState<QuestionResult[]>([]);
+  const [reviewLessonShown, setReviewLessonShown] = useState(false);
+  
   // New lesson phase system
   const [currentPhase, setCurrentPhase] = useState<LessonPhase>('teaching');
   const [completeLessonData, setCompleteLessonData] = useState<CompleteLessonStructure | null>(null);
@@ -196,9 +201,6 @@ const Lesson: NextPage = () => {
   const startTime = useRef(Date.now());
   const endTime = useRef(startTime.current + 1000 * 60 * 3 + 1000 * 33);
 
-  const [questionResults, setQuestionResults] = useState<QuestionResult[]>([]);
-  const [reviewLessonShown, setReviewLessonShown] = useState(false);
-
   // Handle teaching phase completion
   const handleTeachingPhaseComplete = () => {
     setCurrentPhase('practice');
@@ -249,7 +251,6 @@ const Lesson: NextPage = () => {
 
   const totalCorrectAnswersNeeded = lessonProblems.length;
 
-  const [isStartingLesson, setIsStartingLesson] = useState(true);
   const hearts =
     "fast-forward" in router.query &&
     !isNaN(Number(router.query["fast-forward"]))
