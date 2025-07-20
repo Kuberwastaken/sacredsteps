@@ -1,3 +1,43 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-  <path d="M11 2h2v7h7v2h-7v7h-2v-7H4v-2h7V2z"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="none">
+  <!-- Cosmic background glow -->
+  <defs>
+    <radialGradient id="cosmicGlow" cx="50%" cy="50%" r="60%">
+      <stop offset="0%" style="stop-color:#ffffff;stop-opacity:0.3"/>
+      <stop offset="50%" style="stop-color:#e6f3ff;stop-opacity:0.2"/>
+      <stop offset="100%" style="stop-color:#b3d9ff;stop-opacity:0.1"/>
+    </radialGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+      <feMerge> 
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <!-- Background cosmic circle -->
+  <circle cx="50" cy="50" r="45" fill="url(#cosmicGlow)" stroke="white" stroke-width="1" opacity="0.6"/>
+  
+  <!-- Ornate cross with cosmic details -->
+  <g filter="url(#glow)">
+    <!-- Main cross body -->
+    <rect x="44" y="15" width="12" height="70" fill="white" stroke="white" stroke-width="2" rx="2"/>
+    <rect x="15" y="44" width="70" height="12" fill="white" stroke="white" stroke-width="2" rx="2"/>
+    
+    <!-- Decorative elements at cross ends -->
+    <circle cx="50" cy="15" r="4" fill="white" stroke="white" stroke-width="1"/>
+    <circle cx="50" cy="85" r="4" fill="white" stroke="white" stroke-width="1"/>
+    <circle cx="15" cy="50" r="4" fill="white" stroke="white" stroke-width="1"/>
+    <circle cx="85" cy="50" r="4" fill="white" stroke="white" stroke-width="1"/>
+    
+    <!-- Central ornament -->
+    <circle cx="50" cy="50" r="8" fill="none" stroke="white" stroke-width="2"/>
+    <circle cx="50" cy="50" r="3" fill="white"/>
+    
+    <!-- Small cosmic stars around -->
+    <circle cx="25" cy="25" r="1" fill="white" opacity="0.8"/>
+    <circle cx="75" cy="25" r="1" fill="white" opacity="0.8"/>
+    <circle cx="25" cy="75" r="1" fill="white" opacity="0.8"/>
+    <circle cx="75" cy="75" r="1" fill="white" opacity="0.8"/>
+  </g>
 </svg>
