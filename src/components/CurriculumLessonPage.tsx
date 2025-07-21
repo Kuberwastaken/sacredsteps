@@ -29,7 +29,7 @@ interface Exercise {
   difficulty: 'easy' | 'medium' | 'hard';
 }
 
-export function CurriculumLessonPage({ religion, unitId, lessonId }: LessonPageProps) {
+export function LessonPage({ religion, unitId, lessonId }: LessonPageProps) {
   const router = useRouter();
   const { loadCourse, completeLesson } = useCourseStore();
   const { hearts, loseHeart } = useBoundStore();
@@ -361,69 +361,36 @@ export function CurriculumLessonPage({ religion, unitId, lessonId }: LessonPageP
         case 'multiple-choice':
           return (
             <MultipleChoiceExercise
-              exercise={{
-                id: currentExercise.id,
-                prompt: currentExercise.question,
-                type: 'multiple-choice',
-                data: {
-                  question: currentExercise.question,
-                  correctAnswer: currentExercise.correctAnswer as string,
-                  options: currentExercise.options || []
-                }
-              }}
-              userAnswer={null}
-              onAnswerChange={(answer) => handleAnswerSubmit(answer === currentExercise.correctAnswer)}
-              disabled={false}
+              {...commonProps}
+              question={currentExercise.question}
+              options={currentExercise.options || []}
+              correctAnswer={currentExercise.correctAnswer as string}
+              explanation={currentExercise.explanation}
             />
           );
         case 'true-false':
           return (
             <TrueFalseExercise
-              exercise={{
-                id: currentExercise.id,
-                prompt: currentExercise.question,
-                type: 'true-false',
-                data: {
-                  statement: currentExercise.question,
-                  correctAnswer: currentExercise.correctAnswer === 'true',
-                  explanation: currentExercise.explanation || ''
-                }
-              }}
-              userAnswer={null}
-              onAnswerChange={(answer) => handleAnswerSubmit(answer)}
-              disabled={false}
+              {...commonProps}
+              question={currentExercise.question}
+              correctAnswer={currentExercise.correctAnswer === 'true'}
+              explanation={currentExercise.explanation}
             />
           );
         case 'match-pairs':
           return (
             <MatchPairsExercise
-              exercise={{
-                id: currentExercise.id,
-                prompt: 'Match the terms with their definitions',
-                type: 'match-pairs',
-                data: (currentExercise as any).pairs || []
-              }}
-              userAnswer={null}
-              onAnswerChange={(answer) => handleAnswerSubmit(answer.length === ((currentExercise as any).pairs || []).length)}
-              disabled={false}
+              {...commonProps}
+              pairs={(currentExercise as any).pairs || []}
             />
           );
         case 'fill-blank':
           return (
             <FillBlankExercise
-              exercise={{
-                id: currentExercise.id,
-                prompt: currentExercise.question,
-                type: 'fill-in-the-blank',
-                data: {
-                  sentence: currentExercise.question,
-                  correctAnswer: currentExercise.correctAnswer as string,
-                  options: currentExercise.options || ['option1', 'option2', 'option3'] // fallback options
-                }
-              }}
-              userAnswer={null}
-              onAnswerChange={(answer) => handleAnswerSubmit(answer === currentExercise.correctAnswer)}
-              disabled={false}
+              {...commonProps}
+              sentence={currentExercise.question}
+              correctAnswer={currentExercise.correctAnswer as string}
+              explanation={currentExercise.explanation}
             />
           );
         default:
