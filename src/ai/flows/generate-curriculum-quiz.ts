@@ -1,5 +1,4 @@
-import { defineFlow } from '@genkit-ai/flow';
-import { gemini15Flash } from '@genkit-ai/googleai';
+import { ai } from '../genkit';
 import { z } from 'zod';
 
 // Schemas for quiz content generation
@@ -47,16 +46,52 @@ const CurriculumQuizInputSchema = z.object({
   questionsPerType: z.number().default(5),
 });
 
-export const generateCurriculumQuizFlow = defineFlow(
+export const generateCurriculumQuizFlow = ai.defineFlow(
   {
     name: 'generateCurriculumQuiz',
     inputSchema: CurriculumQuizInputSchema,
     outputSchema: QuizContentSchema,
   },
-  async (input) => {
+  async (input: z.infer<typeof CurriculumQuizInputSchema>) => {
     const prompt = `
 You are an expert educational content creator specializing in religious studies. Generate quiz content for a ${input.religion} lesson that is educationally valuable, culturally sensitive, and academically accurate.
 
+Your response must be a JSON object with exactly these arrays:
+{
+  "multipleChoice": [{
+    "id": "string",
+    "type": "multiple-choice",
+    "question": "string",
+    "options": ["string", "string", "string", "string"],
+    "correctAnswer": "string",
+    "explanation": "string",
+    "difficulty": "easy" | "medium" | "hard"
+  }],
+  "trueFalse": [{
+    "id": "string",
+    "type": "true-false",
+    "question": "string",
+    "correctAnswer": "string",
+    "explanation": "string",
+    "difficulty": "easy" | "medium" | "hard"
+  }],
+  "matchPairs": [{
+    "id": "string",
+    "left": "string",
+    "right": "string",
+    "difficulty": "easy" | "medium" | "hard"
+  }],
+  "fillBlanks": [{
+    "id": "string",
+    "type": "fill-blank",
+    "question": "string",
+    "correctAnswer": "string",
+    "explanation": "string",
+    "difficulty": "easy" | "medium" | "hard"
+  }]
+}
+
+Context for generating content:
 **Lesson Context:**
 - Religion: ${input.religion}
 - Unit: ${input.unitTitle}
@@ -64,16 +99,16 @@ You are an expert educational content creator specializing in religious studies.
 - Difficulty Level: ${input.difficulty}
 
 **Learning Objectives:**
-${input.learningObjectives.map(obj => `- ${obj.description}`).join('\n')}
+${input.learningObjectives.map((obj: { description: string }) => `- ${obj.description}`).join('\n')}
 
 **Key Terms:**
-${input.keyTerms.map(term => `- ${term.term}: ${term.definition}`).join('\n')}
+${input.keyTerms.map((term: { term: string; definition: string }) => `- ${term.term}: ${term.definition}`).join('\n')}
 
 **Topics to Cover:**
-${input.topicsToGenerate.map(topic => `- ${topic}`).join('\n')}
+${input.topicsToGenerate.map((topic: string) => `- ${topic}`).join('\n')}
 
 **Cultural Context:**
-${input.culturalContext.map(context => `- ${context}`).join('\n')}
+${input.culturalContext.map((context: string) => `- ${context}`).join('\n')}
 
 Generate ${input.questionsPerType} questions for each type:
 
@@ -114,10 +149,11 @@ For each question, provide:
 - Appropriate difficulty level
 - Link to learning objective ID when relevant
 
-Format your response as valid JSON matching the required schema.
+IMPORTANT: Respond with ONLY the raw JSON object, no markdown formatting, no code blocks, no backticks.
+The response must be valid JSON that matches the required schema.
 `;
 
-    const result = await gemini15Flash.generate({
+    const result = await ai.generate({
       prompt,
       config: {
         temperature: 0.7,
@@ -126,8 +162,49 @@ Format your response as valid JSON matching the required schema.
     });
 
     try {
-      const quizContent = JSON.parse(result.text);
-      return QuizContentSchema.parse(quizContent);
+      // Clean up the response - remove any markdown formatting
+      let cleanText = result.text
+        .replace(/```json\s*/, '') // Remove opening json code block
+        .replace(/```\s*$/, '')    // Remove closing code block
+        .trim();                   // Remove extra whitespace
+
+      // Ensure all required arrays exist with defaults
+      const defaultContent = {
+        multipleChoice: [],
+        trueFalse: [],
+        matchPairs: [],
+        fillBlanks: []
+      };
+
+      // If it still starts with a backtick, try to extract JSON from within backticks
+      if (cleanText.startsWith('`')) {
+        const match = cleanText.match(/`([\s\S]*)`/);
+        if (match && match[1]) {
+          cleanText = match[1].trim();
+        }
+      }
+
+      let quizContent;
+      try {
+        // Merge parsed content with default content to ensure all arrays exist
+        quizContent = { ...defaultContent, ...JSON.parse(cleanText) };
+      } catch (parseError) {
+        console.error('JSON Parse Error:', parseError);
+        throw new Error('Failed to parse AI response as JSON. Please try again.');
+      }
+
+      try {
+        return QuizContentSchema.parse(quizContent);
+      } catch (validationError) {
+        if (validationError instanceof z.ZodError) {
+          console.error('Validation Error:', validationError.errors);
+          const issues = validationError.errors
+            .map(e => `${e.path.join('.')}: ${e.message}`)
+            .join(', ');
+          throw new Error(`Invalid quiz content structure. Issues with: ${issues}`);
+        }
+        throw validationError;
+      }
     } catch (error) {
       console.error('Error parsing quiz content:', error);
       
@@ -142,32 +219,34 @@ Format your response as valid JSON matching the required schema.
   }
 );
 
-export const generateSingleExerciseFlow = defineFlow(
+const SingleExerciseInputSchema = z.object({
+  religion: z.string(),
+  exerciseType: z.enum(['multiple-choice', 'true-false', 'match-pairs', 'fill-blank']),
+  topic: z.string(),
+  keyTerms: z.array(z.object({
+    term: z.string(),
+    definition: z.string(),
+  })),
+  difficulty: z.enum(['easy', 'medium', 'hard']).default('easy'),
+  count: z.number().default(1),
+});
+
+export const generateSingleExerciseFlow = ai.defineFlow(
   {
     name: 'generateSingleExercise',
-    inputSchema: z.object({
-      religion: z.string(),
-      exerciseType: z.enum(['multiple-choice', 'true-false', 'match-pairs', 'fill-blank']),
-      topic: z.string(),
-      keyTerms: z.array(z.object({
-        term: z.string(),
-        definition: z.string(),
-      })),
-      difficulty: z.enum(['easy', 'medium', 'hard']).default('easy'),
-      count: z.number().default(1),
-    }),
+    inputSchema: SingleExerciseInputSchema,
     outputSchema: z.object({
       exercises: z.array(z.union([QuestionSchema, MatchPairSchema])),
     }),
   },
-  async (input) => {
+  async (input: z.infer<typeof SingleExerciseInputSchema>) => {
     const { religion, exerciseType, topic, keyTerms, difficulty, count } = input;
 
     let prompt = `
 Generate ${count} ${exerciseType} exercise(s) for ${religion} on the topic: "${topic}"
 
 **Available Key Terms:**
-${keyTerms.map(term => `- ${term.term}: ${term.definition}`).join('\n')}
+${keyTerms.map((term: { term: string; definition: string }) => `- ${term.term}: ${term.definition}`).join('\n')}
 
 **Difficulty Level:** ${difficulty}
 
@@ -220,7 +299,7 @@ Create fill-in-the-blank questions with:
 
 Respond with valid JSON matching the required schema.`;
 
-    const result = await gemini15Flash.generate({
+    const result = await ai.generate({
       prompt,
       config: {
         temperature: 0.7,
@@ -229,7 +308,21 @@ Respond with valid JSON matching the required schema.`;
     });
 
     try {
-      const exercises = JSON.parse(result.text);
+      // Clean up the response text
+      let cleanText = result.text
+        .replace(/```json\s*/, '') // Remove opening json code block
+        .replace(/```\s*$/, '')    // Remove closing code block
+        .trim();                   // Remove extra whitespace
+
+      // If it still starts with a backtick, try to extract JSON from within backticks
+      if (cleanText.startsWith('`')) {
+        const match = cleanText.match(/`([\s\S]*)`/);
+        if (match && match[1]) {
+          cleanText = match[1].trim();
+        }
+      }
+
+      const exercises = JSON.parse(cleanText);
       return { exercises: exercises.exercises || [] };
     } catch (error) {
       console.error('Error parsing exercise content:', error);
