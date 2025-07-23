@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useBoundStore } from "~/hooks/useBoundStore";
 import { QuizComponent } from "~/components/QuizComponent";
 import { religionUnits } from "~/utils/religion-units";
+import { useCourseStore } from "~/stores/createCourseStore";
 import Link from "next/link";
 
 const ReligionLesson: NextPage = () => {
@@ -11,6 +12,33 @@ const ReligionLesson: NextPage = () => {
   const { religion: religionParam, unit, lesson } = router.query;
   
   const religion = useBoundStore((x) => x.religion);
+  const { loadCourse } = useCourseStore();
+  
+  // Convert query params to strings
+  const religionParamStr = Array.isArray(religionParam) ? religionParam[0] : religionParam;
+  const unitStr = Array.isArray(unit) ? unit[0] : unit;
+  const lessonStr = Array.isArray(lesson) ? lesson[0] : lesson;
+
+  useEffect(() => {
+    // Check if there's a comprehensive course available
+    if (religionParamStr) {
+      const comprehensiveCourse = loadCourse(religionParamStr);
+      
+      if (comprehensiveCourse && comprehensiveCourse.units.length > 0) {
+        // Redirect to the new comprehensive lesson system
+        const firstUnit = comprehensiveCourse.units[0];
+        const firstLesson = firstUnit?.lessons[0];
+        
+        if (firstUnit && firstLesson) {
+          console.log('Redirecting to comprehensive curriculum lesson:', `/lesson/${religionParamStr}/${firstUnit.id}/${firstLesson.id}`);
+          void router.replace(`/lesson/${religionParamStr}/${firstUnit.id}/${firstLesson.id}`);
+          return;
+        }
+      }
+    }
+  }, [religionParamStr, loadCourse, router]);
+
+  // Legacy fallback for old religion-units system
   const increaseLessonsCompleted = useBoundStore((x) => x.increaseLessonsCompleted);
   const increaseXp = useBoundStore((x) => x.increaseXp);
   const increaseLingots = useBoundStore((x) => x.increaseLingots);
@@ -19,15 +47,11 @@ const ReligionLesson: NextPage = () => {
   const hearts = useBoundStore((x) => x.hearts);
   const loseHeart = useBoundStore((x) => x.loseHeart);
   const resetHearts = useBoundStore((x) => x.resetHearts);
-
+  
   const [showResult, setShowResult] = useState(false);
   const [finalScore, setFinalScore] = useState({ score: 0, total: 0 });
 
-  // Find the current unit and lesson data
-  const religionParamStr = Array.isArray(religionParam) ? religionParam[0] : religionParam;
-  const unitStr = Array.isArray(unit) ? unit[0] : unit;
-  const lessonStr = Array.isArray(lesson) ? lesson[0] : lesson;
-
+  // Find the current unit and lesson data (legacy system)
   const religionUnit = religionUnits.find(ru => 
     ru.religion.name.toLowerCase() === religionParamStr?.toLowerCase()
   );

@@ -150,7 +150,7 @@ const Learn: NextPage = () => {
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
                   <div className="text-center p-4">
                     <Target className="w-8 h-8 mx-auto mb-2 text-blue-500" />
-                    <h3 className="font-semibold">Structured Learning</h3>
+                    <h3 className="font-semibold text-black">Structured Learning</h3>
                     <p className="text-sm text-gray-600">Progressive units building on each other</p>
                     {metadata && (
                       <p className="text-xs text-gray-500 mt-1">{metadata.totalUnits} units, {metadata.totalLessons} lessons</p>
@@ -158,12 +158,12 @@ const Learn: NextPage = () => {
                   </div>
                   <div className="text-center p-4">
                     <Zap className="w-8 h-8 mx-auto mb-2 text-yellow-500" />
-                    <h3 className="font-semibold">AI-Generated Exercises</h3>
+                    <h3 className="font-semibold text-black">AI-Generated Exercises</h3>
                     <p className="text-sm text-gray-600">Interactive quizzes and assessments</p>
                   </div>
                   <div className="text-center p-4">
                     <Trophy className="w-8 h-8 mx-auto mb-2 text-green-500" />
-                    <h3 className="font-semibold">Track Progress</h3>
+                    <h3 className="font-semibold text-black">Track Progress</h3>
                     <p className="text-sm text-gray-600">Monitor your learning journey</p>
                     {metadata && (
                       <p className="text-xs text-gray-500 mt-1">~{metadata.totalEstimatedWeeks} weeks total</p>

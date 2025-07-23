@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
+import { convertCurriculumToCourse } from '../utils/curriculum-converter';
 
 export type CourseLesson = {
   id: string;
@@ -152,7 +153,23 @@ export const useCourseStore = create<CourseStore>()(
 
       loadCourse: (religion) => {
         const { courses } = get();
-        return courses[religion] || null;
+        
+        // If course is already loaded, return it
+        if (courses[religion]) {
+          return courses[religion];
+        }
+        
+        // Otherwise, try to load from comprehensive curriculum
+        const curriculumCourse = convertCurriculumToCourse(religion);
+        if (curriculumCourse) {
+          // Store the course for future use
+          set(state => ({
+            courses: { ...state.courses, [religion]: curriculumCourse }
+          }));
+          return curriculumCourse;
+        }
+        
+        return null;
       },
 
       completeLesson: (religion, unitId, lessonId, score) => {

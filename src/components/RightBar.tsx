@@ -1,6 +1,7 @@
 import { useBoundStore } from "~/hooks/useBoundStore";
 import { useLeaderboardRank } from "~/hooks/useLeaderboard";
 import Link from "next/link";
+import { useRouter } from "next/router";
 import type { ComponentProps } from "react";
 import type { LoginScreenState } from "./LoginScreen";
 import {
@@ -12,11 +13,82 @@ import {
 
 export const RightBar = () => {
   const religion = useBoundStore((x) => x.religion);
+  const hearts = useBoundStore((x) => x.hearts);
+  const streak = useBoundStore((x) => x.streak);
+  const { pathname } = useRouter();
+
+  // Only show on learn page and when a religion is selected
+  if (!pathname.startsWith('/learn') || !religion) {
+    return null;
+  }
 
   return (
     <aside className="sticky top-0 hidden w-96 flex-col gap-6 self-start sm:flex">
+      {/* Stats Card */}
       <article className="my-6 flex flex-col gap-4 rounded-2xl border-2 border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-6">
-        <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100">{religion.name}</h2>
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100">{religion?.name}</h2>
+          <div className="flex gap-4">
+            <div className="flex items-center text-red-500">
+              <span>❤️</span>
+              <span className="ml-1 font-bold">{hearts}</span>
+            </div>
+            <div className="flex items-center text-yellow-500">
+              <span>⚡</span>
+              <span className="ml-1 font-bold">{streak}</span>
+            </div>
+          </div>
+        </div>
+        
+        {/* About Section */}
+        <div className="border-t border-gray-200 dark:border-gray-700 pt-4">
+          <h3 className="text-lg font-semibold mb-2 text-gray-800 dark:text-gray-200">About Christianity</h3>
+          <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
+            One of the world's major monotheistic religions, based on the life and teachings of Jesus Christ. Focused on faith, love, and salvation.
+          </p>
+        </div>
+
+        {/* Key Concepts */}
+        <div className="border-t border-gray-200 dark:border-gray-700 pt-4">
+          <h3 className="text-lg font-semibold mb-2 text-gray-800 dark:text-gray-200">Key Concepts</h3>
+          <ul className="text-sm text-gray-600 dark:text-gray-400 space-y-2">
+            <li className="flex items-center">
+              <span className="mr-2">📖</span>
+              Holy Trinity
+            </li>
+            <li className="flex items-center">
+              <span className="mr-2">✝️</span>
+              Salvation through Christ
+            </li>
+            <li className="flex items-center">
+              <span className="mr-2">🙏</span>
+              Prayer and Worship
+            </li>
+            <li className="flex items-center">
+              <span className="mr-2">❤️</span>
+              Love and Compassion
+            </li>
+          </ul>
+        </div>
+
+        {/* Quick Links */}
+        <div className="border-t border-gray-200 dark:border-gray-700 pt-4">
+          <h3 className="text-lg font-semibold mb-2 text-gray-800 dark:text-gray-200">Quick Links</h3>
+          <div className="grid grid-cols-2 gap-2">
+            <Link href="/learn" className="text-sm px-3 py-2 bg-gray-100 dark:bg-gray-700 rounded-lg text-center hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors">
+              Lessons
+            </Link>
+            <Link href="/leaderboard" className="text-sm px-3 py-2 bg-gray-100 dark:bg-gray-700 rounded-lg text-center hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors">
+              Leaderboard
+            </Link>
+            <Link href="/profile" className="text-sm px-3 py-2 bg-gray-100 dark:bg-gray-700 rounded-lg text-center hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors">
+              Profile
+            </Link>
+            <Link href="/shop" className="text-sm px-3 py-2 bg-gray-100 dark:bg-gray-700 rounded-lg text-center hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors">
+              Shop
+            </Link>
+          </div>
+        </div>
       </article>
     </aside>
   );

@@ -6,7 +6,10 @@ import { ComprehensiveCourse, CourseUnit, CourseLesson } from '../stores/createC
  */
 export function convertCurriculumToCourse(religion: string): ComprehensiveCourse | null {
   const curriculum = allCurricula[religion as keyof typeof allCurricula];
-  if (!curriculum) return null;
+  if (!curriculum) {
+    console.warn(`No curriculum found for religion: ${religion}`);
+    return null;
+  }
 
   const course: ComprehensiveCourse = {
     religion: curriculum.religion,
