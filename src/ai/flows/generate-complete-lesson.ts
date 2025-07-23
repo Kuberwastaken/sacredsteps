@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { ai } from '../genkit';
+import { ai, AZURE_MODEL_NAME } from '../genkit';
 
 // Input schema for complete lesson generation
 const GenerateCompleteLessonInputSchema = z.object({
@@ -105,7 +105,7 @@ Generate title:`;
         let conceptTitle = '';
         try {
           const titleResult = await ai.generate({
-            model: 'googleai/gemini-2.0-flash-exp',
+            model: 'openai/',
             prompt: titlePrompt,
             config: {
               temperature: 0.7,
@@ -160,7 +160,7 @@ Create 4 key takeaways from the lesson, one per line:`;
 
         const [conceptResult, keyPointsResult] = await Promise.all([
           ai.generate({
-            model: 'googleai/gemini-2.0-flash-exp',
+            model: 'openai/',
             prompt: conceptPrompt,
             config: {
               temperature: 0.8,
@@ -168,7 +168,7 @@ Create 4 key takeaways from the lesson, one per line:`;
             },
           }),
           ai.generate({
-            model: 'googleai/gemini-2.0-flash-exp',
+            model: 'openai/',
             prompt: keyPointsPrompt,
             config: {
               temperature: 0.8,
@@ -181,7 +181,7 @@ Create 4 key takeaways from the lesson, one per line:`;
         let content = '';
         try {
           const conceptResult = await ai.generate({
-            model: 'googleai/gemini-2.0-flash-exp',
+            model: 'openai/',
             prompt: conceptPrompt,
             config: {
               temperature: 0.8,
@@ -209,7 +209,7 @@ Use simple language.
 One point per line:`;
 
           const keyPointsResult = await ai.generate({
-            model: 'googleai/gemini-2.0-flash-exp',
+            model: 'openai/',
             prompt: keyPointsPrompt,
             config: {
               temperature: 0.7,
@@ -251,7 +251,7 @@ Examples:
 - "Imagine faith as a bright lantern in the dark!"`;
 
           const visualResult = await ai.generate({
-            model: 'googleai/gemini-2.0-flash-exp',
+            model: 'openai/',
             prompt: visualPrompt,
             config: {
               temperature: 0.8,
@@ -280,7 +280,7 @@ Requirements:
 - No markdown formatting`;
 
           const exampleResult = await ai.generate({
-            model: 'googleai/gemini-2.0-flash-exp',
+            model: 'openai/',
             prompt: examplePrompt,
             config: {
               temperature: 0.7,
@@ -348,7 +348,7 @@ C) [wrong answer that sounds plausible]
 EXPLANATION: [brief explanation referring back to the story]`;
 
         const exerciseResult = await ai.generate({
-          model: 'googleai/gemini-2.0-flash-exp',
+          model: 'openai/',
           prompt: exercisePrompt,
           config: {
             temperature: 0.7,
@@ -452,7 +452,7 @@ D) [wrong answer - irrelevant]
 EXPLANATION: [why the correct answer shows understanding of the story]`;
 
         const quizResult = await ai.generate({
-          model: 'googleai/gemini-2.0-flash-exp',
+          model: 'openai/',
           prompt: quizPrompt,
           config: {
             temperature: 0.7,

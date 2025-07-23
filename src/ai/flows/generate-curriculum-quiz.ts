@@ -1,5 +1,5 @@
 import { defineFlow } from '@genkit-ai/flow';
-import { gemini15Flash } from '@genkit-ai/googleai';
+import { ai, AZURE_MODEL_NAME } from '../genkit';
 import { z } from 'zod';
 
 // Schemas for quiz content generation
@@ -117,7 +117,8 @@ For each question, provide:
 Format your response as valid JSON matching the required schema.
 `;
 
-    const result = await gemini15Flash.generate({
+    const result = await ai.generate({
+      model: AZURE_MODEL_NAME,
       prompt,
       config: {
         temperature: 0.7,
@@ -220,7 +221,8 @@ Create fill-in-the-blank questions with:
 
 Respond with valid JSON matching the required schema.`;
 
-    const result = await gemini15Flash.generate({
+    const result = await ai.generate({
+      model: AZURE_MODEL_NAME,
       prompt,
       config: {
         temperature: 0.7,

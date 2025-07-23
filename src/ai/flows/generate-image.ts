@@ -35,7 +35,7 @@ const generateImageFlow = ai.defineFlow(
   },
   async (input) => {
     const { media } = await ai.generate({
-      model: 'googleai/gemini-2.0-flash-preview-image-generation',
+      model: 'openai/dall-e-3',
       prompt: `Create a serene and inspiring digital painting with a minimalist and symbolic style, suitable for a spiritual learning app. The art style should be clean, with soft colors and a gentle feel. Prompt: A symbolic representation of "${input.prompt}"`,
       config: {
         responseModalities: ['TEXT', 'IMAGE'],

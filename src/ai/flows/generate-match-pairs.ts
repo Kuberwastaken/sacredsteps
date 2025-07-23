@@ -54,7 +54,7 @@ const generateMatchPairsFlow = ai.defineFlow(
     };
 
     const response = await ai.generate({
-      model: 'googleai/gemini-1.5-flash',
+      model: 'openai/',
       prompt: `Create a matching pairs exercise for learning about ${topic} in ${religion}.
 
 ${difficultyPrompts[difficulty]}

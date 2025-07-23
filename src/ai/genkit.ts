@@ -1,16 +1,27 @@
 import {genkit} from 'genkit';
-import {googleAI} from '@genkit-ai/googleai';
+import {openAI} from 'genkitx-openai';
 
-// Expose the Google AI API key via environment variable. This allows the app
+// Expose the Azure OpenAI configuration via environment variables. This allows the app
 // to run locally or in production without hard-coding credentials.
-const googleApiKey = process.env.GOOGLE_AI_API_KEY ?? process.env.GOOGLE_GENAI_API_KEY;
+const azureApiKey = process.env.AZURE_OPENAI_API_KEY;
+const azureEndpoint = process.env.AZURE_OPENAI_ENDPOINT;
+const deploymentName = process.env.AZURE_OPENAI_DEPLOYMENT_NAME || 'gpt-4o-mini';
 
-if (!googleApiKey) {
-  console.warn('Warning: No Google AI API key found. AI features will be disabled.');
-  console.warn('Please set GOOGLE_AI_API_KEY or GOOGLE_GENAI_API_KEY in your environment variables.');
+// Export the model name for use in other files
+export const AZURE_MODEL_NAME = `openai/${deploymentName}`;
+
+if (!azureApiKey || !azureEndpoint) {
+  console.warn('Warning: No Azure OpenAI credentials found. AI features will be disabled.');
+  console.warn('Please set AZURE_OPENAI_API_KEY and AZURE_OPENAI_ENDPOINT in your environment variables.');
 }
 
 export const ai = genkit({
-  plugins: [googleAI({apiKey: googleApiKey})],
-  model: 'googleai/gemini-2.0-flash-exp',
+  plugins: [
+    openAI({
+      apiKey: azureApiKey,
+      baseURL: `${azureEndpoint}openai/deployments/${deploymentName}`,
+      defaultQuery: { 'api-version': '2024-12-01-preview' },
+    })
+  ],
+  model: AZURE_MODEL_NAME,
 });

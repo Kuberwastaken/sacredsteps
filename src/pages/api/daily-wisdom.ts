@@ -20,8 +20,8 @@ export default async function handler(
 
   try {
     // Check if API key is available
-    if (!process.env.GOOGLE_AI_API_KEY && !process.env.GOOGLE_GENAI_API_KEY) {
-      console.log('No Google AI API key found, client will use fallback content');
+    if (!process.env.AZURE_OPENAI_API_KEY || !process.env.AZURE_OPENAI_ENDPOINT) {
+      console.log('No Azure OpenAI credentials found, client will use fallback content');
       return res.status(503).json({ 
         success: false, 
         error: "AI service unavailable" 

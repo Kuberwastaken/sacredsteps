@@ -93,7 +93,7 @@ Please provide:
 Keep it very short and simple. No special formatting, em dashes, or unusual punctuation.`;
 
           const result = await ai.generate({
-            model: 'googleai/gemini-2.0-flash-exp',
+            model: 'openai/',
             prompt: lessonPrompt,
             config: {
               temperature: 0.7,

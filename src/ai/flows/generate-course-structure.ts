@@ -1,5 +1,5 @@
 import { generate } from '@genkit-ai/ai';
-import { gemini15Flash } from '@genkit-ai/googleai';
+import { AZURE_MODEL_NAME } from '../genkit';
 import { z } from 'zod';
 
 // Define comprehensive course structure schema
@@ -49,7 +49,7 @@ const CourseStructureSchema = z.object({
 
 export const generateCourseStructure = generate({
   name: 'generateCourseStructure',
-  model: gemini15Flash,
+  model: AZURE_MODEL_NAME,
   input: z.object({
     religion: z.string(),
     targetAudience: z.enum(['complete_beginner', 'some_knowledge', 'intermediate']),
