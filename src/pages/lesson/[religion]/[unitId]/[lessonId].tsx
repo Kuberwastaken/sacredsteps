@@ -1,8 +1,8 @@
 import { type NextPage } from "next";
 import { useRouter } from "next/router";
-import { CurriculumLessonPage } from "~/components/CurriculumLessonPage";
+import { LessonPage } from "~/components/CurriculumLessonPage";
 
-const LessonPage: NextPage = () => {
+const LessonPageRoute: NextPage = () => {
   const router = useRouter();
   const { religion, unitId, lessonId } = router.query;
 
@@ -18,7 +18,7 @@ const LessonPage: NextPage = () => {
   }
 
   return (
-    <CurriculumLessonPage
+    <LessonPage
       religion={religion as string}
       unitId={unitId as string}
       lessonId={lessonId as string}
@@ -26,4 +26,4 @@ const LessonPage: NextPage = () => {
   );
 };
 
-export default LessonPage;
+export default LessonPageRoute;

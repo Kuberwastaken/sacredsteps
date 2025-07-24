@@ -1,4 +1,3 @@
-import { defineFlow } from '@genkit-ai/flow';
 import { ai, AZURE_MODEL_NAME } from '../genkit';
 import { z } from 'zod';
 
@@ -47,7 +46,7 @@ const CurriculumQuizInputSchema = z.object({
   questionsPerType: z.number().default(5),
 });
 
-export const generateCurriculumQuizFlow = defineFlow(
+export const generateCurriculumQuizFlow = ai.defineFlow(
   {
     name: 'generateCurriculumQuiz',
     inputSchema: CurriculumQuizInputSchema,
@@ -106,15 +105,55 @@ Generate ${input.questionsPerType} questions for each type:
 5. Avoid controversial or sectarian interpretations
 6. Use inclusive language that respects all students
 
-For each question, provide:
-- A unique ID
-- The question text
-- Correct answer
-- Clear explanation of why the answer is correct
-- Appropriate difficulty level
-- Link to learning objective ID when relevant
+**REQUIRED JSON FORMAT:**
+You must return a JSON object with exactly this structure:
 
-Format your response as valid JSON matching the required schema.
+{
+  "multipleChoice": [
+    {
+      "id": "unique-id",
+      "type": "multiple-choice",
+      "question": "Question text?",
+      "options": ["Option A", "Option B", "Option C", "Option D"],
+      "correctAnswer": "Option A",
+      "explanation": "Why this is correct...",
+      "difficulty": "easy|medium|hard",
+      "learningObjectiveId": "optional-id"
+    }
+  ],
+  "trueFalse": [
+    {
+      "id": "unique-id",
+      "type": "true-false", 
+      "question": "Statement to evaluate",
+      "correctAnswer": "true",
+      "explanation": "Why this is true/false...",
+      "difficulty": "easy|medium|hard",
+      "learningObjectiveId": "optional-id"
+    }
+  ],
+  "matchPairs": [
+    {
+      "id": "unique-id",
+      "left": "Term or concept",
+      "right": "Definition or description", 
+      "difficulty": "easy|medium|hard"
+    }
+  ],
+  "fillBlanks": [
+    {
+      "id": "unique-id",
+      "type": "fill-blank",
+      "question": "Text with _______ blank to fill",
+      "correctAnswer": "word or phrase for blank",
+      "explanation": "Why this answer is correct...",
+      "difficulty": "easy|medium|hard",
+      "learningObjectiveId": "optional-id"
+    }
+  ]
+}
+
+Return ONLY the JSON object above, no other text or formatting.
 `;
 
     const result = await ai.generate({
@@ -126,12 +165,21 @@ Format your response as valid JSON matching the required schema.
       },
     });
 
+    console.log('AI raw response:', result.text);
+
     try {
-      const quizContent = JSON.parse(result.text);
+      // Strip markdown code fences if present
+      let raw = result.text.trim();
+      if (raw.startsWith('```')) {
+        // Remove opening ``` or ```json and trailing ``` fences
+        raw = raw.replace(/^```(?:json)?\r?\n?/, '').replace(/```$/, '').trim();
+      }
+      console.log('Cleaned JSON:', raw);
+      const quizContent = JSON.parse(raw);
       return QuizContentSchema.parse(quizContent);
     } catch (error) {
       console.error('Error parsing quiz content:', error);
-      
+      console.error('Raw text was:', result.text);
       // Fallback: create minimal valid response
       return {
         multipleChoice: [],
@@ -143,7 +191,7 @@ Format your response as valid JSON matching the required schema.
   }
 );
 
-export const generateSingleExerciseFlow = defineFlow(
+export const generateSingleExerciseFlow = ai.defineFlow(
   {
     name: 'generateSingleExercise',
     inputSchema: z.object({

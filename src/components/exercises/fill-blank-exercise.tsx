@@ -1,84 +1,106 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Button } from '~/components/ui/button';
 import { Card, CardContent } from '~/components/ui/card';
-import type { FillBlankExercise } from '~/types';
 
 interface FillBlankExerciseProps {
-  exercise: FillBlankExercise;
-  userAnswer: string | null;
-  onAnswerChange: (answer: string) => void;
-  disabled: boolean;
+  sentence: string;
+  correctAnswer: string;
+  explanation?: string;
+  onAnswer: (isCorrect: boolean, selectedAnswer: string) => void;
+  hearts: number;
 }
 
-export function FillBlankExercise({ exercise, userAnswer, onAnswerChange, disabled }: FillBlankExerciseProps) {
-  const [selectedOption, setSelectedOption] = useState<string>('');
+export function FillBlankExercise({ 
+  sentence, 
+  correctAnswer, 
+  explanation, 
+  onAnswer, 
+  hearts 
+}: FillBlankExerciseProps) {
+  const [userInput, setUserInput] = useState<string>('');
+  const [showResult, setShowResult] = useState(false);
+  const [answered, setAnswered] = useState(false);
 
-  useEffect(() => {
-    if (userAnswer) {
-      setSelectedOption(userAnswer);
-    }
-  }, [userAnswer]);
-
-  const handleOptionSelect = (option: string) => {
-    if (disabled) return;
-    setSelectedOption(option);
-    onAnswerChange(option);
+  const handleSubmit = () => {
+    if (!userInput.trim() || answered) return;
+    
+    const isCorrect = userInput.trim().toLowerCase() === correctAnswer.toLowerCase();
+    setAnswered(true);
+    setShowResult(true);
+    onAnswer(isCorrect, userInput.trim());
   };
 
   const renderSentenceWithBlank = () => {
-    const parts = exercise.data.sentence.split('____');
+    const parts = sentence.split('____');
     if (parts.length === 2) {
       return (
         <span className="text-lg">
           {parts[0]}
-          <span className="inline-block min-w-[100px] border-b-2 border-blue-500 mx-2 text-center">
-            {selectedOption && (
-              <span className="font-semibold text-blue-600">{selectedOption}</span>
-            )}
-            {!selectedOption && (
-              <span className="text-gray-400">____</span>
-            )}
-          </span>
+          <input
+            value={userInput}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setUserInput(e.target.value)}
+            disabled={answered}
+            className="inline-block w-32 mx-2 text-center border-2 border-blue-500 rounded px-2 py-1"
+            placeholder="..."
+          />
           {parts[1]}
         </span>
       );
     }
-    return exercise.data.sentence;
+    return sentence;
   };
 
   return (
-    <div className="space-y-6">
-      <div className="text-center">
-        <h3 className="text-lg font-semibold mb-2">{exercise.prompt}</h3>
-        <p className="text-sm text-gray-600">Fill in the blank with the correct word</p>
-      </div>
-
+    <div className="space-y-6 max-w-2xl mx-auto">
       {/* Sentence with blank */}
-      <Card className="mx-auto max-w-2xl">
-        <CardContent className="p-6 text-center">
-          {renderSentenceWithBlank()}
+      <Card>
+        <CardContent className="p-6">
+          <h3 className="text-xl font-medium text-center mb-6">Fill in the blank</h3>
+          <div className="text-center">
+            {renderSentenceWithBlank()}
+          </div>
+
+          {/* Submit Button */}
+          {!answered && (
+            <div className="mt-6 text-center">
+              <Button
+                onClick={handleSubmit}
+                disabled={!userInput.trim()}
+                className="w-full max-w-xs"
+              >
+                Submit Answer
+              </Button>
+            </div>
+          )}
+
+          {/* Results and Explanation */}
+          {showResult && (
+            <div className="mt-6 p-4 rounded-lg bg-gray-50">
+              <div className="text-center mb-3">
+                {userInput.trim().toLowerCase() === correctAnswer.toLowerCase() ? (
+                  <div className="text-green-600 font-semibold">✅ Correct!</div>
+                ) : (
+                  <div className="text-red-600 font-semibold">❌ Incorrect</div>
+                )}
+              </div>
+              
+              {explanation && (
+                <div className="text-sm text-gray-700">
+                  <strong>Explanation:</strong> {explanation}
+                </div>
+              )}
+              
+              {userInput.trim().toLowerCase() !== correctAnswer.toLowerCase() && (
+                <div className="text-sm text-gray-700 mt-2">
+                  <strong>Correct answer:</strong> {correctAnswer}
+                </div>
+              )}
+            </div>
+          )}
         </CardContent>
       </Card>
-
-      {/* Options */}
-      <div className="space-y-3">
-        <h4 className="font-medium text-sm text-gray-700 text-center">Choose the correct word:</h4>
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 max-w-lg mx-auto">
-          {exercise.data.options.map((option, index) => (
-            <Button
-              key={index}
-              variant={selectedOption === option ? "default" : "outline"}
-              className="h-auto p-3 text-center"
-              onClick={() => handleOptionSelect(option)}
-              disabled={disabled}
-            >
-              {option}
-            </Button>
-          ))}
-        </div>
-      </div>
     </div>
   );
 } 
