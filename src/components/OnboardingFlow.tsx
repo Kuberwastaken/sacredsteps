@@ -134,12 +134,12 @@ export const OnboardingFlow: React.FC<OnboardingFlowProps> = ({ onComplete, onSt
             <div className="mb-8">
               <div className="w-36 h-36 bg-gradient-to-br from-cyan-400 via-purple-500 to-pink-500 rounded-full mx-auto mb-8 flex items-center justify-center shadow-2xl animate-float relative">
                 <div className="absolute inset-2 bg-gradient-to-br from-white/20 to-transparent rounded-full"></div>
-                <span className="text-7xl relative z-10">🧙‍♂️</span>
+                <span className="text-7xl relative z-10">📖</span>
                 <div className="absolute -inset-4 bg-gradient-to-r from-cyan-500/30 to-purple-500/30 rounded-full blur-lg animate-pulse"></div>
               </div>
               <div className="bg-gradient-to-br from-indigo-800/90 to-purple-800/90 backdrop-blur-xl rounded-2xl p-6 relative mb-8 border border-white/20 shadow-2xl">
                 <div className="absolute -bottom-3 left-1/2 transform -translate-x-1/2 w-6 h-6 bg-gradient-to-br from-indigo-800 to-purple-800 rotate-45 border-r border-b border-white/20"></div>
-                <p className="text-xl text-white font-medium">Hi there! I'm your Sacred Steps guide!</p>
+                <p className="text-xl text-white font-medium">Hi there! I'm your talking Sacred Steps book!</p>
                 <div className="absolute top-2 right-2">
                   <div className="w-2 h-2 bg-cyan-400 rounded-full animate-ping"></div>
                 </div>
@@ -154,7 +154,7 @@ export const OnboardingFlow: React.FC<OnboardingFlowProps> = ({ onComplete, onSt
             <div className="mb-8">
               <div className="w-28 h-28 bg-gradient-to-br from-cyan-400 via-purple-500 to-pink-500 rounded-full mx-auto mb-4 flex items-center justify-center shadow-xl animate-float relative">
                 <div className="absolute inset-2 bg-gradient-to-br from-white/20 to-transparent rounded-full"></div>
-                <span className="text-5xl relative z-10">🧙‍♂️</span>
+                <span className="text-5xl relative z-10">📖</span>
                 <div className="absolute -inset-2 bg-gradient-to-r from-cyan-500/20 to-purple-500/20 rounded-full blur-md animate-pulse"></div>
               </div>
               <div className="bg-gradient-to-br from-indigo-800/90 to-purple-800/90 backdrop-blur-xl rounded-2xl p-5 relative border border-white/20 shadow-xl">
@@ -191,7 +191,7 @@ export const OnboardingFlow: React.FC<OnboardingFlowProps> = ({ onComplete, onSt
             <div className="mb-8">
               <div className="w-28 h-28 bg-gradient-to-br from-cyan-400 via-purple-500 to-pink-500 rounded-full mx-auto mb-4 flex items-center justify-center shadow-xl animate-float relative">
                 <div className="absolute inset-2 bg-gradient-to-br from-white/20 to-transparent rounded-full"></div>
-                <span className="text-5xl relative z-10">🧙‍♂️</span>
+                <span className="text-5xl relative z-10">📖</span>
                 <div className="absolute -inset-2 bg-gradient-to-r from-cyan-500/20 to-purple-500/20 rounded-full blur-md animate-pulse"></div>
               </div>
               <div className="bg-gradient-to-br from-indigo-800/90 to-purple-800/90 backdrop-blur-xl rounded-2xl p-5 relative border border-white/20 shadow-xl">
@@ -237,7 +237,7 @@ export const OnboardingFlow: React.FC<OnboardingFlowProps> = ({ onComplete, onSt
             <div className="mb-8">
               <div className="w-28 h-28 bg-gradient-to-br from-cyan-400 via-purple-500 to-pink-500 rounded-full mx-auto mb-4 flex items-center justify-center shadow-xl animate-float relative">
                 <div className="absolute inset-2 bg-gradient-to-br from-white/20 to-transparent rounded-full"></div>
-                <span className="text-5xl relative z-10">🧙‍♂️</span>
+                <span className="text-5xl relative z-10">📖</span>
                 <div className="absolute -inset-2 bg-gradient-to-r from-cyan-500/20 to-purple-500/20 rounded-full blur-md animate-pulse"></div>
               </div>
               <div className="bg-gradient-to-br from-indigo-800/90 to-purple-800/90 backdrop-blur-xl rounded-2xl p-5 relative border border-white/20 shadow-xl">
@@ -275,7 +275,7 @@ export const OnboardingFlow: React.FC<OnboardingFlowProps> = ({ onComplete, onSt
             <div className="mb-8">
               <div className="w-28 h-28 bg-gradient-to-br from-cyan-400 via-purple-500 to-pink-500 rounded-full mx-auto mb-4 flex items-center justify-center shadow-xl animate-float relative">
                 <div className="absolute inset-2 bg-gradient-to-br from-white/20 to-transparent rounded-full"></div>
-                <span className="text-5xl relative z-10">🧙‍♂️</span>
+                <span className="text-5xl relative z-10">📖</span>
                 <div className="absolute -inset-2 bg-gradient-to-r from-cyan-500/20 to-purple-500/20 rounded-full blur-md animate-pulse"></div>
               </div>
               <div className="bg-gradient-to-br from-indigo-800/90 to-purple-800/90 backdrop-blur-xl rounded-2xl p-5 relative border border-white/20 shadow-xl">
@@ -321,7 +321,7 @@ export const OnboardingFlow: React.FC<OnboardingFlowProps> = ({ onComplete, onSt
             <div className="mb-8">
               <div className="w-36 h-36 bg-gradient-to-br from-cyan-400 via-purple-500 to-pink-500 rounded-full mx-auto mb-8 flex items-center justify-center shadow-2xl animate-float relative">
                 <div className="absolute inset-2 bg-gradient-to-br from-white/20 to-transparent rounded-full"></div>
-                <span className="text-7xl relative z-10">🧙‍♂️</span>
+                <span className="text-7xl relative z-10">📖</span>
                 <div className="absolute -inset-4 bg-gradient-to-r from-cyan-500/30 to-purple-500/30 rounded-full blur-lg animate-pulse"></div>
               </div>
               <div className="bg-gradient-to-br from-indigo-800/90 to-purple-800/90 backdrop-blur-xl rounded-2xl p-6 relative mb-8 border border-white/20 shadow-2xl">
@@ -347,7 +347,7 @@ export const OnboardingFlow: React.FC<OnboardingFlowProps> = ({ onComplete, onSt
             <div className="mb-8">
               <div className="w-36 h-36 bg-gradient-to-br from-cyan-400 via-purple-500 to-pink-500 rounded-full mx-auto mb-8 flex items-center justify-center shadow-2xl animate-float relative">
                 <div className="absolute inset-2 bg-gradient-to-br from-white/20 to-transparent rounded-full"></div>
-                <span className="text-7xl relative z-10">🧙‍♂️</span>
+                <span className="text-7xl relative z-10">📖</span>
                 <div className="absolute -inset-4 bg-gradient-to-r from-cyan-500/30 to-purple-500/30 rounded-full blur-lg animate-pulse"></div>
               </div>
               <div className="bg-gradient-to-br from-indigo-800/90 to-purple-800/90 backdrop-blur-xl rounded-2xl p-6 relative mb-8 border border-white/20 shadow-2xl">
