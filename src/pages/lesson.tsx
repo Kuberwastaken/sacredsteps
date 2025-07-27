@@ -9,12 +9,25 @@ import { TopBar } from "~/components/TopBar";
 import { BottomBar } from "~/components/BottomBar";
 
 type SimpleExercise = {
-  type: 'multiple-choice' | 'true-false';
+  type: 'multiple-choice' | 'true-false' | 'fill-in-the-blank' | 'match-pairs';
   question: string;
-  options: string[];
-  correctAnswer: number;
+  options?: string[];
+  answerTiles?: string[];
+  pairs?: { left: string; right: string }[];
+  correctAnswer: number | number[];
   explanation: string;
+  shuffledDefinitions?: string[]; // Added for shuffling
 };
+
+// Utility to shuffle an array
+function shuffleArray<T>(array: T[]): T[] {
+  const arr = [...array];
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
 
 const Lesson: NextPage = () => {
   const router = useRouter();
@@ -64,18 +77,23 @@ const Lesson: NextPage = () => {
               explanation: 'Jesus Christ is indeed considered the founder and central figure of Christianity.'
             },
             {
-              type: 'multiple-choice',
-              question: 'Which day is traditionally observed as the Christian Sabbath?',
-              options: ['Friday', 'Saturday', 'Sunday', 'Monday'],
-              correctAnswer: 2,
-              explanation: 'Sunday is traditionally observed as the Christian Sabbath, commemorating the resurrection of Jesus.'
+              type: 'fill-in-the-blank',
+              question: 'Complete the famous Christian teaching: "Blessed are the meek, for they shall inherit the _____."',
+              answerTiles: ['earth'],
+              correctAnswer: [0],
+              explanation: 'This is from the Beatitudes in the Sermon on the Mount, teaching about humility and gentleness.'
             },
             {
-              type: 'multiple-choice',
-              question: 'What are the three persons of the Christian Trinity?',
-              options: ['Father, Son, Holy Spirit', 'Jesus, Mary, Joseph', 'God, Angels, Saints', 'Creator, Redeemer, Sanctifier'],
-              correctAnswer: 0,
-              explanation: 'The Trinity consists of the Father, Son (Jesus Christ), and Holy Spirit as three persons in one God.'
+              type: 'match-pairs',
+              question: 'Match the Christian concepts with their meanings:',
+              pairs: [
+                { left: 'Trinity', right: 'Father, Son, Holy Spirit' },
+                { left: 'Sabbath', right: 'Day of rest and worship' },
+                { left: 'Baptism', right: 'Sacrament of initiation' },
+                { left: 'Eucharist', right: 'Communion with bread and wine' }
+              ],
+              correctAnswer: [0, 1, 2, 3],
+              explanation: 'These are fundamental concepts in Christian theology and practice.'
             }
           );
           break;
@@ -97,18 +115,23 @@ const Lesson: NextPage = () => {
               explanation: 'Muslims perform five daily prayers (Salah) as one of the Five Pillars of Islam.'
             },
             {
-              type: 'multiple-choice',
-              question: 'What is the Islamic pilgrimage to Mecca called?',
-              options: ['Jihad', 'Hajj', 'Ramadan', 'Zakat'],
-              correctAnswer: 1,
-              explanation: 'Hajj is the annual Islamic pilgrimage to Mecca, which every Muslim must undertake at least once if able.'
+              type: 'fill-in-the-blank',
+              question: 'Complete the Islamic greeting: "As-salamu _____."',
+              answerTiles: ['alaykum'],
+              correctAnswer: [0],
+              explanation: '"As-salamu alaykum" means "Peace be upon you" and is a common Islamic greeting.'
             },
             {
-              type: 'multiple-choice',
-              question: 'Who is considered the final prophet in Islam?',
-              options: ['Jesus', 'Moses', 'Muhammad', 'Abraham'],
-              correctAnswer: 2,
-              explanation: 'Prophet Muhammad is considered the final messenger and prophet in Islam.'
+              type: 'match-pairs',
+              question: 'Match the Islamic concepts with their meanings:',
+              pairs: [
+                { left: 'Shahada', right: 'Declaration of faith' },
+                { left: 'Salah', right: 'Daily prayers' },
+                { left: 'Zakat', right: 'Charitable giving' },
+                { left: 'Sawm', right: 'Fasting during Ramadan' }
+              ],
+              correctAnswer: [0, 1, 2, 3],
+              explanation: 'These are the Five Pillars of Islam, the core practices of the faith.'
             }
           );
           break;
@@ -130,18 +153,23 @@ const Lesson: NextPage = () => {
               explanation: 'The Jewish Sabbath (Shabbat) is observed from Friday evening to Saturday evening.'
             },
             {
-              type: 'multiple-choice',
-              question: 'What is the Jewish coming-of-age ceremony called?',
-              options: ['Confirmation', 'Bar/Bat Mitzvah', 'Baptism', 'First Communion'],
-              correctAnswer: 1,
-              explanation: 'Bar Mitzvah (for boys) and Bat Mitzvah (for girls) mark the coming of age in Jewish tradition.'
+              type: 'fill-in-the-blank',
+              question: 'Complete the Jewish blessing: "Baruch atah Adonai, _____."',
+              answerTiles: ['Eloheinu'],
+              correctAnswer: [0],
+              explanation: 'This is the beginning of many Jewish blessings, meaning "Blessed are You, Lord our God."'
             },
             {
-              type: 'multiple-choice',
-              question: 'Which holiday commemorates the Jewish exodus from Egypt?',
-              options: ['Yom Kippur', 'Rosh Hashanah', 'Passover', 'Hanukkah'],
-              correctAnswer: 2,
-              explanation: 'Passover commemorates the liberation of the Israelites from slavery in Egypt.'
+              type: 'match-pairs',
+              question: 'Match the Jewish concepts with their meanings:',
+              pairs: [
+                { left: 'Shabbat', right: 'Day of rest and prayer' },
+                { left: 'Kosher', right: 'Food preparation laws' },
+                { left: 'Tzedakah', right: 'Charitable giving' },
+                { left: 'Mitzvah', right: 'Good deed or commandment' }
+              ],
+              correctAnswer: [0, 1, 2, 3],
+              explanation: 'These are fundamental concepts in Jewish religious practice and ethics.'
             }
           );
           break;
@@ -163,18 +191,23 @@ const Lesson: NextPage = () => {
               explanation: 'Reincarnation (samsara) is a central belief in Hinduism, where the soul is reborn after death.'
             },
             {
-              type: 'multiple-choice',
-              question: 'What is the Hindu concept of duty and righteousness called?',
-              options: ['Karma', 'Dharma', 'Moksha', 'Samsara'],
-              correctAnswer: 1,
-              explanation: 'Dharma refers to the moral and ethical duties and righteousness in Hindu philosophy.'
+              type: 'fill-in-the-blank',
+              question: 'Complete the Hindu greeting: "Namaste" means "I bow to the _____ in you."',
+              answerTiles: ['divine'],
+              correctAnswer: [0],
+              explanation: 'Namaste recognizes the divine spark within each person, a fundamental Hindu concept.'
             },
             {
-              type: 'multiple-choice',
-              question: 'Which river is considered most sacred in Hinduism?',
-              options: ['Yamuna', 'Godavari', 'Ganges', 'Narmada'],
-              correctAnswer: 2,
-              explanation: 'The Ganges (Ganga) is considered the most sacred river in Hinduism.'
+              type: 'match-pairs',
+              question: 'Match the Hindu concepts with their meanings:',
+              pairs: [
+                { left: 'Dharma', right: 'Duty and righteousness' },
+                { left: 'Karma', right: 'Action and its consequences' },
+                { left: 'Moksha', right: 'Liberation from rebirth' },
+                { left: 'Samsara', right: 'Cycle of rebirth' }
+              ],
+              correctAnswer: [0, 1, 2, 3],
+              explanation: 'These are the four main concepts (Purusharthas) in Hindu philosophy.'
             }
           );
           break;
@@ -196,18 +229,23 @@ const Lesson: NextPage = () => {
               explanation: 'The Four Noble Truths are indeed the foundation of Buddhist philosophy and teaching.'
             },
             {
-              type: 'multiple-choice',
-              question: 'What is the Buddhist path to enlightenment called?',
-              options: ['Four Noble Truths', 'Eightfold Path', 'Middle Way', 'Nirvana'],
-              correctAnswer: 1,
-              explanation: 'The Noble Eightfold Path is the Buddhist guide to ethical and spiritual development leading to enlightenment.'
+              type: 'fill-in-the-blank',
+              question: 'Complete the Buddhist greeting: "Namo _____."',
+              answerTiles: ['Buddhaya'],
+              correctAnswer: [0],
+              explanation: '"Namo Buddhaya" means "I bow to the Buddha" and is a common Buddhist greeting.'
             },
             {
-              type: 'multiple-choice',
-              question: 'What is the ultimate goal in Buddhism?',
-              options: ['Heaven', 'Nirvana', 'Moksha', 'Paradise'],
-              correctAnswer: 1,
-              explanation: 'Nirvana is the ultimate goal in Buddhism, representing liberation from suffering and the cycle of rebirth.'
+              type: 'match-pairs',
+              question: 'Match the Buddhist concepts with their meanings:',
+              pairs: [
+                { left: 'Dukkha', right: 'Suffering or unsatisfactoriness' },
+                { left: 'Nirvana', right: 'Liberation from suffering' },
+                { left: 'Sangha', right: 'Community of practitioners' },
+                { left: 'Dharma', right: 'Buddhist teachings' }
+              ],
+              correctAnswer: [0, 1, 2, 3],
+              explanation: 'These are fundamental concepts in Buddhist philosophy and practice.'
             }
           );
           break;
@@ -222,6 +260,16 @@ const Lesson: NextPage = () => {
           });
       }
       
+      // After all exercises are pushed, shuffle definitions for match-pairs
+      exercises.forEach((ex) => {
+        if (ex.type === 'match-pairs' && ex.pairs) {
+          // Shuffle the right side (definitions)
+          const shuffled = shuffleArray(ex.pairs.map(p => p.right));
+          // Map the correct answer index to the shuffled array
+          ex.shuffledDefinitions = shuffled;
+          ex.correctAnswer = ex.pairs.map(pair => shuffled.indexOf(pair.right));
+        }
+      });
       setExercises(exercises);
       setIsLoading(false);
     };
@@ -364,7 +412,7 @@ const Lesson: NextPage = () => {
 
             {/* Exercise Options */}
             <div className="mb-8 space-y-3">
-              {exercise.options.map((option, index) => (
+              {exercise.type === 'multiple-choice' && exercise.options && exercise.options.map((option, index) => (
                 <button
                   key={index}
                   onClick={() => handleAnswer(index)}
@@ -395,6 +443,139 @@ const Lesson: NextPage = () => {
                   </div>
                 </button>
               ))}
+              
+              {exercise.type === 'true-false' && exercise.options && exercise.options.map((option, index) => (
+                <button
+                  key={index}
+                  onClick={() => handleAnswer(index)}
+                  disabled={showResult}
+                  className={`w-full p-4 rounded-xl text-left transition-all duration-200 ${
+                    showResult
+                      ? index === exercise.correctAnswer
+                        ? 'bg-green-500/30 border-green-500 text-white border-2'
+                        : index === selectedAnswer && index !== exercise.correctAnswer
+                        ? 'bg-red-500/30 border-red-500 text-white border-2'
+                        : 'bg-white/10 border border-white/20 text-white/70'
+                      : 'bg-white/10 border border-white/20 text-white hover:bg-white/20 hover:border-white/40'
+                  }`}
+                >
+                  <div className="flex items-center gap-3">
+                    <div className={`w-8 h-8 rounded-full border-2 flex items-center justify-center text-sm font-semibold ${
+                      showResult
+                        ? index === exercise.correctAnswer
+                          ? 'border-green-500 bg-green-500 text-white'
+                          : index === selectedAnswer && index !== exercise.correctAnswer
+                          ? 'border-red-500 bg-red-500 text-white'
+                          : 'border-white/30 text-white/50'
+                        : 'border-white/50 text-white/70'
+                    }`}>
+                      {String.fromCharCode(65 + index)}
+                    </div>
+                    <span className="text-lg">{option}</span>
+                  </div>
+                </button>
+              ))}
+              
+              {exercise.type === 'fill-in-the-blank' && exercise.answerTiles && (
+                <div className="space-y-4">
+                  {exercise.answerTiles.map((tile, index) => (
+                    <div key={index} className="flex items-center gap-3">
+                      <div className="w-8 h-8 rounded-full border-2 border-white/50 text-white/70 flex items-center justify-center text-sm font-semibold">
+                        {index + 1}
+                      </div>
+                      <div className="flex-1">
+                        <input
+                          type="text"
+                          className="w-full p-3 rounded-lg bg-white/10 border border-white/20 text-white focus:outline-none focus:ring-2 focus:ring-green-500"
+                          placeholder={`Enter the missing word`}
+                          disabled={showResult}
+                        />
+                      </div>
+                    </div>
+                  ))}
+                  <button
+                    onClick={() => handleAnswer(0)}
+                    disabled={showResult}
+                    className="w-full p-4 rounded-xl bg-green-500 text-white font-semibold hover:bg-green-600 transition-colors"
+                  >
+                    Check Answer
+                  </button>
+                </div>
+              )}
+              
+              {exercise.type === 'match-pairs' && exercise.pairs && (
+                <div className="space-y-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {/* Left Column - Terms */}
+                    <div className="space-y-3">
+                      <h3 className="text-white font-semibold mb-3">Terms:</h3>
+                      {exercise.pairs.map((pair, index) => (
+                        <div key={index} className="p-3 bg-white/10 rounded-lg border border-white/20">
+                          <div className="flex items-center gap-3">
+                            <div className="w-8 h-8 rounded-full bg-blue-500 text-white flex items-center justify-center text-sm font-semibold">
+                              {index + 1}
+                            </div>
+                            <span className="text-white font-medium">{pair.left}</span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                    
+                    {/* Right Column - Definitions */}
+                    <div className="space-y-3">
+                      <h3 className="text-white font-semibold mb-3">Definitions:</h3>
+                      {exercise.shuffledDefinitions && exercise.shuffledDefinitions.map((def, index) => (
+                        <div key={index} className="p-3 bg-white/10 rounded-lg border border-white/20">
+                          <div className="flex items-center gap-3">
+                            <div className="w-8 h-8 rounded-full bg-green-500 text-white flex items-center justify-center text-sm font-semibold">
+                              {String.fromCharCode(65 + index)}
+                            </div>
+                            <span className="text-white/80 text-sm">{def}</span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                  
+                  {/* Matching Instructions */}
+                  <div className="bg-blue-500/20 border border-blue-400/30 rounded-lg p-4">
+                    <p className="text-white text-center">
+                      <strong>Instructions:</strong> Match each term (left) with its correct definition (right) by selecting the corresponding letter.
+                    </p>
+                  </div>
+                  
+                  {/* Answer Selection */}
+                  <div className="space-y-3">
+                    <h3 className="text-white font-semibold">Your Matches:</h3>
+                    {exercise.pairs.map((pair, index) => (
+                      <div key={index} className="flex items-center gap-3 p-3 bg-white/5 rounded-lg">
+                        <div className="w-8 h-8 rounded-full bg-blue-500 text-white flex items-center justify-center text-sm font-semibold">
+                          {index + 1}
+                        </div>
+                        <span className="text-white font-medium">{pair.left}</span>
+                        <span className="text-white/60">→</span>
+                        <select
+                          className="flex-1 p-2 rounded-lg bg-white/10 border border-white/20 text-black focus:outline-none focus:ring-2 focus:ring-green-500"
+                          disabled={showResult}
+                        >
+                          <option value="">Choose...</option>
+                          {exercise.shuffledDefinitions && exercise.shuffledDefinitions.map((_, i) => (
+                            <option key={i} value={i}>{String.fromCharCode(65 + i)}</option>
+                          ))}
+                        </select>
+                      </div>
+                    ))}
+                  </div>
+                  
+                  <button
+                    onClick={() => handleAnswer(0)}
+                    disabled={showResult}
+                    className="w-full p-4 rounded-xl bg-green-500 text-white font-semibold hover:bg-green-600 transition-colors"
+                  >
+                    Check Answers
+                  </button>
+                </div>
+              )}
             </div>
 
             {/* Result Feedback */}

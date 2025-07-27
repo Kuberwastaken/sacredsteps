@@ -126,7 +126,7 @@ export const OnboardingFlow: React.FC<OnboardingFlowProps> = ({ onComplete, onSt
       </div>
 
       {/* Content - flexible to fill remaining space */}
-      <div className="flex-1 flex flex-col items-center justify-center p-6 pb-24">{/* Added pb-24 for button space */}
+      <div className="flex-1 flex flex-col items-center justify-center p-6 pb-32">{/* Increased pb-32 for more button space */}
         
         {/* Step 0: Welcome Screen */}
         {currentStep === 0 && (
