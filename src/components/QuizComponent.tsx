@@ -294,16 +294,31 @@ export const QuizComponent = ({ religion, topic, onComplete }: QuizComponentProp
 
         {currentQuestion.type === "match_pairs" && currentQuestion.pairs && (
           <div className="bg-white/10 rounded-lg p-4">
+            {/* Study Material Table (from MatchPairsExercise) */}
+            <div className="mb-4">
+              <div className="overflow-x-auto">
+                <table className="min-w-full border border-gray-200 rounded-lg">
+                  <thead>
+                    <tr className="bg-gray-50">
+                      <th className="px-3 py-2 text-left text-sm font-medium text-gray-700">Term</th>
+                      <th className="px-3 py-2 text-left text-sm font-medium text-gray-700">Definition</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {currentQuestion.pairs.map((item: any, idx: number) => (
+                      <tr key={item.term} className={idx % 2 === 0 ? "bg-white" : "bg-gray-50"}>
+                        <td className="px-3 py-2 font-semibold text-gray-900 whitespace-nowrap">{item.term}</td>
+                        <td className="px-3 py-2 text-gray-700">{item.definition}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
             <MatchPairsExercise
-              exercise={{
-                id: currentQuestion.id,
-                prompt: currentQuestion.question,
-                type: 'match-pairs',
-                data: currentQuestion.pairs
-              }}
-              userAnswer={selectedAnswer as { term: string; definition: string }[] | null}
-              onAnswerChange={(answer) => handleAnswerSelect(answer)}
-              disabled={showFeedback}
+              pairs={currentQuestion.pairs}
+              onAnswer={(isCorrect, answer) => handleAnswerSelect(answer)}
+              hearts={5}
             />
           </div>
         )}

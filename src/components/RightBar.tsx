@@ -23,7 +23,7 @@ export const RightBar = () => {
   }
 
   return (
-    <aside className="sticky top-0 hidden w-96 flex-col gap-6 self-start sm:flex">
+    <aside className="fixed top-0 right-0 hidden w-96 h-screen flex-col gap-6 self-start lg:flex overflow-y-auto pt-[58px] md:pt-6">
       {/* Stats Card */}
       <article className="my-6 flex flex-col gap-4 rounded-2xl border-2 border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-6">
         <div className="flex justify-between items-center mb-4">

@@ -139,7 +139,7 @@ export const OnboardingFlow: React.FC<OnboardingFlowProps> = ({ onComplete, onSt
               </div>
               <div className="bg-gradient-to-br from-indigo-800/90 to-purple-800/90 backdrop-blur-xl rounded-2xl p-6 relative mb-8 border border-white/20 shadow-2xl">
                 <div className="absolute -bottom-3 left-1/2 transform -translate-x-1/2 w-6 h-6 bg-gradient-to-br from-indigo-800 to-purple-800 rotate-45 border-r border-b border-white/20"></div>
-                <p className="text-xl text-white font-medium">Hi there! I'm your talking Sacred Steps book!</p>
+                <p className="text-xl text-white font-medium">Hi there! I'm your talking PrayGo book!</p>
                 <div className="absolute top-2 right-2">
                   <div className="w-2 h-2 bg-cyan-400 rounded-full animate-ping"></div>
                 </div>
@@ -332,8 +332,8 @@ export const OnboardingFlow: React.FC<OnboardingFlowProps> = ({ onComplete, onSt
                 </div>
               </div>
             </div>
-            <div className="text-center p-6 rounded-2xl bg-white/10 backdrop-blur-sm border border-white/20">
-              <h1 className="text-5xl font-bold bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500 bg-clip-text text-transparent mb-4">sacredsteps</h1>
+            <div className="text-center p-10 rounded-2xl bg-white/10 backdrop-blur-sm border border-white/20 overflow-visible">
+              <h1 className="text-5xl font-bold bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500 bg-clip-text text-transparent mb-4">praygo</h1>
               <p className="text-white/80 text-lg">
                 The free, fun, and effective way to learn about religion!
               </p>

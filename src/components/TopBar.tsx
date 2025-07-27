@@ -160,7 +160,7 @@ export const TopBar = ({
                   <div className="flex grow flex-col bg-white dark:bg-gray-800">
                     <Link
                       className="flex items-center gap-2 p-2 font-bold text-gray-700 dark:text-gray-300 hover-theme"
-                      href="https://podcast.sacredsteps.com"
+                      href="https://podcast.praygo.com"
                       target="_blank"
                       rel="noopener noreferrer"
                     >
@@ -169,7 +169,7 @@ export const TopBar = ({
                     </Link>
                     <Link
                       className="flex items-center gap-2 border-t-2 border-gray-300 dark:border-gray-600 p-2 font-bold text-gray-700 dark:text-gray-300 hover-theme"
-                      href="https://schools.sacredsteps.com"
+                      href="https://schools.praygo.com"
                       target="_blank"
                       rel="noopener noreferrer"
                     >

@@ -82,18 +82,6 @@ const Lesson: NextPage = () => {
               answerTiles: ['earth'],
               correctAnswer: [0],
               explanation: 'This is from the Beatitudes in the Sermon on the Mount, teaching about humility and gentleness.'
-            },
-            {
-              type: 'match-pairs',
-              question: 'Match the Christian concepts with their meanings:',
-              pairs: [
-                { left: 'Trinity', right: 'Father, Son, Holy Spirit' },
-                { left: 'Sabbath', right: 'Day of rest and worship' },
-                { left: 'Baptism', right: 'Sacrament of initiation' },
-                { left: 'Eucharist', right: 'Communion with bread and wine' }
-              ],
-              correctAnswer: [0, 1, 2, 3],
-              explanation: 'These are fundamental concepts in Christian theology and practice.'
             }
           );
           break;
@@ -120,18 +108,6 @@ const Lesson: NextPage = () => {
               answerTiles: ['alaykum'],
               correctAnswer: [0],
               explanation: '"As-salamu alaykum" means "Peace be upon you" and is a common Islamic greeting.'
-            },
-            {
-              type: 'match-pairs',
-              question: 'Match the Islamic concepts with their meanings:',
-              pairs: [
-                { left: 'Shahada', right: 'Declaration of faith' },
-                { left: 'Salah', right: 'Daily prayers' },
-                { left: 'Zakat', right: 'Charitable giving' },
-                { left: 'Sawm', right: 'Fasting during Ramadan' }
-              ],
-              correctAnswer: [0, 1, 2, 3],
-              explanation: 'These are the Five Pillars of Islam, the core practices of the faith.'
             }
           );
           break;
@@ -158,18 +134,6 @@ const Lesson: NextPage = () => {
               answerTiles: ['Eloheinu'],
               correctAnswer: [0],
               explanation: 'This is the beginning of many Jewish blessings, meaning "Blessed are You, Lord our God."'
-            },
-            {
-              type: 'match-pairs',
-              question: 'Match the Jewish concepts with their meanings:',
-              pairs: [
-                { left: 'Shabbat', right: 'Day of rest and prayer' },
-                { left: 'Kosher', right: 'Food preparation laws' },
-                { left: 'Tzedakah', right: 'Charitable giving' },
-                { left: 'Mitzvah', right: 'Good deed or commandment' }
-              ],
-              correctAnswer: [0, 1, 2, 3],
-              explanation: 'These are fundamental concepts in Jewish religious practice and ethics.'
             }
           );
           break;
@@ -196,18 +160,6 @@ const Lesson: NextPage = () => {
               answerTiles: ['divine'],
               correctAnswer: [0],
               explanation: 'Namaste recognizes the divine spark within each person, a fundamental Hindu concept.'
-            },
-            {
-              type: 'match-pairs',
-              question: 'Match the Hindu concepts with their meanings:',
-              pairs: [
-                { left: 'Dharma', right: 'Duty and righteousness' },
-                { left: 'Karma', right: 'Action and its consequences' },
-                { left: 'Moksha', right: 'Liberation from rebirth' },
-                { left: 'Samsara', right: 'Cycle of rebirth' }
-              ],
-              correctAnswer: [0, 1, 2, 3],
-              explanation: 'These are the four main concepts (Purusharthas) in Hindu philosophy.'
             }
           );
           break;
@@ -234,18 +186,6 @@ const Lesson: NextPage = () => {
               answerTiles: ['Buddhaya'],
               correctAnswer: [0],
               explanation: '"Namo Buddhaya" means "I bow to the Buddha" and is a common Buddhist greeting.'
-            },
-            {
-              type: 'match-pairs',
-              question: 'Match the Buddhist concepts with their meanings:',
-              pairs: [
-                { left: 'Dukkha', right: 'Suffering or unsatisfactoriness' },
-                { left: 'Nirvana', right: 'Liberation from suffering' },
-                { left: 'Sangha', right: 'Community of practitioners' },
-                { left: 'Dharma', right: 'Buddhist teachings' }
-              ],
-              correctAnswer: [0, 1, 2, 3],
-              explanation: 'These are fundamental concepts in Buddhist philosophy and practice.'
             }
           );
           break;
@@ -261,16 +201,9 @@ const Lesson: NextPage = () => {
       }
       
       // After all exercises are pushed, shuffle definitions for match-pairs
-      exercises.forEach((ex) => {
-        if (ex.type === 'match-pairs' && ex.pairs) {
-          // Shuffle the right side (definitions)
-          const shuffled = shuffleArray(ex.pairs.map(p => p.right));
-          // Map the correct answer index to the shuffled array
-          ex.shuffledDefinitions = shuffled;
-          ex.correctAnswer = ex.pairs.map(pair => shuffled.indexOf(pair.right));
-        }
-      });
-      setExercises(exercises);
+      // Remove all match-pairs exercises
+      const filteredExercises = exercises.filter(ex => ex.type !== 'match-pairs');
+      setExercises(filteredExercises);
       setIsLoading(false);
     };
 
@@ -499,80 +432,6 @@ const Lesson: NextPage = () => {
                     className="w-full p-4 rounded-xl bg-green-500 text-white font-semibold hover:bg-green-600 transition-colors"
                   >
                     Check Answer
-                  </button>
-                </div>
-              )}
-              
-              {exercise.type === 'match-pairs' && exercise.pairs && (
-                <div className="space-y-4">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {/* Left Column - Terms */}
-                    <div className="space-y-3">
-                      <h3 className="text-white font-semibold mb-3">Terms:</h3>
-                      {exercise.pairs.map((pair, index) => (
-                        <div key={index} className="p-3 bg-white/10 rounded-lg border border-white/20">
-                          <div className="flex items-center gap-3">
-                            <div className="w-8 h-8 rounded-full bg-blue-500 text-white flex items-center justify-center text-sm font-semibold">
-                              {index + 1}
-                            </div>
-                            <span className="text-white font-medium">{pair.left}</span>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                    
-                    {/* Right Column - Definitions */}
-                    <div className="space-y-3">
-                      <h3 className="text-white font-semibold mb-3">Definitions:</h3>
-                      {exercise.shuffledDefinitions && exercise.shuffledDefinitions.map((def, index) => (
-                        <div key={index} className="p-3 bg-white/10 rounded-lg border border-white/20">
-                          <div className="flex items-center gap-3">
-                            <div className="w-8 h-8 rounded-full bg-green-500 text-white flex items-center justify-center text-sm font-semibold">
-                              {String.fromCharCode(65 + index)}
-                            </div>
-                            <span className="text-white/80 text-sm">{def}</span>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                  
-                  {/* Matching Instructions */}
-                  <div className="bg-blue-500/20 border border-blue-400/30 rounded-lg p-4">
-                    <p className="text-white text-center">
-                      <strong>Instructions:</strong> Match each term (left) with its correct definition (right) by selecting the corresponding letter.
-                    </p>
-                  </div>
-                  
-                  {/* Answer Selection */}
-                  <div className="space-y-3">
-                    <h3 className="text-white font-semibold">Your Matches:</h3>
-                    {exercise.pairs.map((pair, index) => (
-                      <div key={index} className="flex items-center gap-3 p-3 bg-white/5 rounded-lg">
-                        <div className="w-8 h-8 rounded-full bg-blue-500 text-white flex items-center justify-center text-sm font-semibold">
-                          {index + 1}
-                        </div>
-                        <span className="text-white font-medium">{pair.left}</span>
-                        <span className="text-white/60">→</span>
-                        <select
-                          className="flex-1 p-2 rounded-lg bg-white/10 border border-white/20 text-black focus:outline-none focus:ring-2 focus:ring-green-500"
-                          disabled={showResult}
-                        >
-                          <option value="">Choose...</option>
-                          {exercise.shuffledDefinitions && exercise.shuffledDefinitions.map((_, i) => (
-                            <option key={i} value={i}>{String.fromCharCode(65 + i)}</option>
-                          ))}
-                        </select>
-                      </div>
-                    ))}
-                  </div>
-                  
-                  <button
-                    onClick={() => handleAnswer(0)}
-                    disabled={showResult}
-                    className="w-full p-4 rounded-xl bg-green-500 text-white font-semibold hover:bg-green-600 transition-colors"
-                  >
-                    Check Answers
                   </button>
                 </div>
               )}

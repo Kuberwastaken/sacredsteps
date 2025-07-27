@@ -150,10 +150,10 @@ export const LoginScreen = ({
                       ?
                       {ageTooltipShown && (
                         <div className="absolute -right-5 top-full z-10 w-72 rounded-2xl border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 p-4 text-center text-xs leading-5 text-gray-800 dark:text-gray-200">
-                          Providing your age ensures you get the right sacredsteps
+                          Providing your age ensures you get the right praygo
                           experience. For more details, please visit our{" "}
                           <Link
-                            href="https://www.sacredsteps.com/privacy"
+                            href="https://www.praygo.com/privacy"
                             className="text-blue-700 dark:text-blue-400"
                           >
                             Privacy Policy
@@ -222,17 +222,17 @@ export const LoginScreen = ({
             </button>
           </div>
           <p className="text-center text-xs leading-5 text-gray-400 dark:text-gray-500">
-            By signing in to sacredsteps, you agree to our{" "}
+            By signing in to praygo, you agree to our{" "}
             <Link
               className="font-bold"
-              href="https://www.sacredsteps.com/terms?wantsPlainInfo=1"
+              href="https://www.praygo.com/terms?wantsPlainInfo=1"
             >
               Terms
             </Link>{" "}
             and{" "}
             <Link
               className="font-bold"
-              href="https://www.sacredsteps.com/privacy?wantsPlainInfo=1"
+              href="https://www.praygo.com/privacy?wantsPlainInfo=1"
             >
               Privacy Policy
             </Link>

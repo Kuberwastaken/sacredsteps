@@ -23,10 +23,10 @@ const MyApp: AppType = ({ Component, pageProps }) => {
   return (
     <>
       <Head>
-        <title>React sacredsteps Clone</title>
+        <title>PrayGo</title>
         <meta
           name="description"
-          content="sacredsteps web app clone written with React"
+          content="praygo web app clone written with React"
         />
         <link rel="icon" href="/favicon.ico" />
         <meta name="theme-color" content="#0A0" />
