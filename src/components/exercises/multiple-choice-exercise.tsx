@@ -42,19 +42,19 @@ export function MultipleChoiceExercise({
   const getOptionClassName = (option: string) => {
     if (!showResult) {
       return selectedOption === option 
-        ? "bg-blue-100 border-blue-500 text-blue-900" 
-        : "bg-white border-gray-300 hover:bg-gray-50";
+        ? "bg-blue-100 border-blue-500 text-black" 
+        : "bg-white border-gray-300 hover:bg-gray-50 text-black";
     }
     
     if (option === correctAnswer) {
-      return "bg-green-100 border-green-500 text-green-900";
+      return "bg-green-100 border-green-500 text-black";
     }
     
     if (option === selectedOption && option !== correctAnswer) {
-      return "bg-red-100 border-red-500 text-red-900";
+      return "bg-red-100 border-red-500 text-black";
     }
     
-    return "bg-gray-100 border-gray-300 text-gray-600";
+    return "bg-gray-100 border-gray-300 text-black";
   };
 
   return (

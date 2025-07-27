@@ -146,7 +146,7 @@ export function MatchPairsExercise({ pairs, onAnswer, hearts }: MatchPairsExerci
                 {pairs.map(item => (
                   <button
                     key={item.term}
-                    className={`w-full p-3 text-left border-2 rounded-lg transition-colors ${
+                    className={`w-full p-3 text-left border-2 rounded-lg transition-colors text-black ${
                       selectedTerm === item.term 
                         ? 'bg-blue-100 border-blue-500 text-blue-900'
                         : isTermMatched(item.term)
@@ -169,7 +169,7 @@ export function MatchPairsExercise({ pairs, onAnswer, hearts }: MatchPairsExerci
                 {shuffledDefinitions.map(definition => (
                   <button
                     key={definition}
-                    className={`w-full p-3 text-left border-2 rounded-lg transition-colors ${
+                    className={`w-full p-3 text-left border-2 rounded-lg transition-colors text-black ${
                       selectedDefinition === definition 
                         ? 'bg-blue-100 border-blue-500 text-blue-900'
                         : isDefinitionMatched(definition)

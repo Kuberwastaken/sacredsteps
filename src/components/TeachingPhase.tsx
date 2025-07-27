@@ -109,14 +109,14 @@ const ConceptCardComponent = ({ concept, onNext }: { concept: ConceptCard; onNex
                     disabled={quizAnswer !== null}
                     className={`w-full p-4 rounded-xl text-left transition-all duration-300 ${
                       quizAnswer === null 
-                        ? 'bg-white/10 hover:bg-white/20 text-white' 
+                        ? 'bg-white/10 hover:bg-white/20 text-black' 
                         : quizAnswer === index
                           ? index === conceptQuiz.correctAnswer
-                            ? 'bg-green-500/30 text-green-100 border-2 border-green-400'
-                            : 'bg-red-500/30 text-red-100 border-2 border-red-400'
+                            ? 'bg-green-500/30 text-black border-2 border-green-400'
+                            : 'bg-red-500/30 text-black border-2 border-red-400'
                           : index === conceptQuiz.correctAnswer
-                            ? 'bg-green-500/30 text-green-100 border-2 border-green-400'
-                            : 'bg-white/10 text-white/70'
+                            ? 'bg-green-500/30 text-black border-2 border-green-400'
+                            : 'bg-white/10 text-black'
                     }`}
                   >
                     {option}

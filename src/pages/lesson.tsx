@@ -420,11 +420,11 @@ const Lesson: NextPage = () => {
                   className={`w-full p-4 rounded-xl text-left transition-all duration-200 ${
                     showResult
                       ? index === exercise.correctAnswer
-                        ? 'bg-green-500/30 border-green-500 text-white border-2'
+                        ? 'bg-green-500/30 border-green-500 text-black border-2'
                         : index === selectedAnswer && index !== exercise.correctAnswer
-                        ? 'bg-red-500/30 border-red-500 text-white border-2'
-                        : 'bg-white/10 border border-white/20 text-white/70'
-                      : 'bg-white/10 border border-white/20 text-white hover:bg-white/20 hover:border-white/40'
+                        ? 'bg-red-500/30 border-red-500 text-black border-2'
+                        : 'bg-white/10 border border-white/20 text-black'
+                      : 'bg-white/10 border border-white/20 text-black hover:bg-white/20 hover:border-white/40'
                   }`}
                 >
                   <div className="flex items-center gap-3">
@@ -434,8 +434,8 @@ const Lesson: NextPage = () => {
                           ? 'border-green-500 bg-green-500 text-white'
                           : index === selectedAnswer && index !== exercise.correctAnswer
                           ? 'border-red-500 bg-red-500 text-white'
-                          : 'border-white/30 text-white/50'
-                        : 'border-white/50 text-white/70'
+                          : 'border-white/30 text-black'
+                        : 'border-white/50 text-black'
                     }`}>
                       {String.fromCharCode(65 + index)}
                     </div>
@@ -452,11 +452,11 @@ const Lesson: NextPage = () => {
                   className={`w-full p-4 rounded-xl text-left transition-all duration-200 ${
                     showResult
                       ? index === exercise.correctAnswer
-                        ? 'bg-green-500/30 border-green-500 text-white border-2'
+                        ? 'bg-green-500/30 border-green-500 text-black border-2'
                         : index === selectedAnswer && index !== exercise.correctAnswer
-                        ? 'bg-red-500/30 border-red-500 text-white border-2'
-                        : 'bg-white/10 border border-white/20 text-white/70'
-                      : 'bg-white/10 border border-white/20 text-white hover:bg-white/20 hover:border-white/40'
+                        ? 'bg-red-500/30 border-red-500 text-black border-2'
+                        : 'bg-white/10 border border-white/20 text-black'
+                      : 'bg-white/10 border border-white/20 text-black hover:bg-white/20 hover:border-white/40'
                   }`}
                 >
                   <div className="flex items-center gap-3">
@@ -466,12 +466,12 @@ const Lesson: NextPage = () => {
                           ? 'border-green-500 bg-green-500 text-white'
                           : index === selectedAnswer && index !== exercise.correctAnswer
                           ? 'border-red-500 bg-red-500 text-white'
-                          : 'border-white/30 text-white/50'
-                        : 'border-white/50 text-white/70'
+                          : 'border-white/30 text-black'
+                        : 'border-white/50 text-black'
                     }`}>
-                      {String.fromCharCode(65 + index)}
+                      {option === 'true' ? 'T' : 'F'}
                     </div>
-                    <span className="text-lg">{option}</span>
+                    <span className="text-lg capitalize">{option}</span>
                   </div>
                 </button>
               ))}
