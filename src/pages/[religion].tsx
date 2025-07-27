@@ -35,16 +35,18 @@ const ReligionPage: NextPage = () => {
   }
 
   return (
-    <div>
+    <div className="flex flex-col h-screen md:h-auto">
       <TopBar />
       <LeftBar selectedTab="Learn" />
-      <div className="flex justify-center gap-3 pt-14 md:ml-24 lg:ml-64 lg:gap-12">
-        <div className="flex w-full max-w-4xl flex-col gap-5 p-5">
-          <CoursePath religion={religion.name} />
+      {/* Main content container with proper mobile layout */}
+      <div className="flex-1 overflow-y-auto pt-[58px] pb-[88px] md:pt-0 md:pb-0 md:ml-24 lg:ml-64">
+        <div className="flex justify-center gap-3 md:gap-12 min-h-full">
+          <div className="flex w-full max-w-4xl flex-col gap-5 p-5">
+            <CoursePath religion={religion.name} />
+          </div>
         </div>
       </div>
       <RightBar />
-      <div className="pt-[90px]"></div>
       <BottomBar selectedTab="Learn" />
     </div>
   );

@@ -20,17 +20,21 @@ import { useRouter } from "next/router";
 
 const Profile: NextPage = () => {
   return (
-    <div>
+    <div className="flex flex-col h-screen md:h-auto">
       <ProfileTopBar />
       <LeftBar selectedTab="Profile" />
-      <div className="flex justify-center gap-3 pt-14 md:ml-24 lg:ml-64 lg:gap-12">
-        <div className="flex w-full max-w-4xl flex-col gap-5 p-5">
-          <ProfileTopSection />
-          <ProfileStatsSection />
-          <ProfileFriendsSection />
+      
+      {/* Main content container with proper mobile layout */}
+      <div className="flex-1 overflow-y-auto pt-[64px] pb-[88px] md:pt-0 md:pb-0 md:ml-24 lg:ml-64">
+        <div className="flex justify-center gap-3 md:gap-12 min-h-full">
+          <div className="flex w-full max-w-4xl flex-col gap-5 p-5">
+            <ProfileTopSection />
+            <ProfileStatsSection />
+            <ProfileFriendsSection />
+          </div>
         </div>
       </div>
-      <div className="pt-[90px]"></div>
+      
       <BottomBar selectedTab="Profile" />
     </div>
   );

@@ -200,12 +200,14 @@ const Learn: NextPage = () => {
   }
 
   return (
-    <>
+    <div className="flex flex-col h-screen md:h-auto">
       <TopBar />
       <LeftBar selectedTab="Learn" />
       
-      <div className="flex justify-center gap-3 pt-14 sm:p-6 sm:pt-10 md:ml-24 lg:ml-64 lg:gap-12 min-h-screen bg-gradient-to-br from-blue-900 via-purple-900 to-indigo-900">
-        <div className="flex max-w-2xl grow flex-col">
+      {/* Main content container with proper mobile layout */}
+      <div className="flex-1 overflow-y-auto pt-[58px] pb-[88px] md:pt-0 md:pb-0 md:ml-24 lg:ml-64 bg-gradient-to-br from-blue-900 via-purple-900 to-indigo-900">
+        <div className="flex justify-center gap-3 sm:p-6 lg:gap-12 min-h-full">
+          <div className="flex max-w-2xl grow flex-col p-5">
           {/* Header with religion and stats */}
           <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 mb-6">
             <div className="flex items-center justify-between mb-4">
@@ -373,17 +375,17 @@ const Learn: NextPage = () => {
               </Link>
             </div>
           )}
+          </div>
         </div>
-        
-        <RightBar />
       </div>
-
+      
+      <RightBar />
       <BottomBar selectedTab="Learn" />
       <LoginScreen
         loginScreenState={loginScreenState}
         setLoginScreenState={setLoginScreenState}
       />
-    </>
+    </div>
   );
 };
 

@@ -304,11 +304,11 @@ const Lesson: NextPage = () => {
   const progress = ((currentExercise + 1) / exercises.length) * 100;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-900 via-purple-900 to-blue-800">
+    <div className="flex flex-col h-screen bg-gradient-to-br from-blue-900 via-purple-900 to-blue-800">
       <TopBar />
       
       {/* Progress Header */}
-      <div className="bg-white/10 backdrop-blur-lg border-b border-white/20">
+      <div className="bg-white/10 backdrop-blur-lg border-b border-white/20 pt-[58px] md:pt-0">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center gap-4 max-w-4xl mx-auto">
             {/* Exit Button */}
@@ -347,7 +347,8 @@ const Lesson: NextPage = () => {
       </div>
 
       {/* Main Content */}
-      <div className="container mx-auto px-4 py-8">
+      <div className="flex-1 overflow-y-auto">
+        <div className="container mx-auto px-4 py-8">
         <div className="max-w-4xl mx-auto">
           <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-8 shadow-2xl border border-white/20">
             
@@ -435,6 +436,7 @@ const Lesson: NextPage = () => {
                 {currentExercise < exercises.length - 1 ? 'Continue' : 'Complete Lesson'}
               </button>
             )}
+          </div>
           </div>
         </div>
       </div>

@@ -16,42 +16,47 @@ const Learn: NextPage = () => {
   }
 
   return (
-    <>
+    <div className="flex flex-col h-screen md:h-auto">
       <TopBar />
       <LeftBar />
-      <div className="flex justify-center gap-3 px-6 pt-6 pb-28">
-        <div className="relative top-5 hidden lg:block">
-          {/* Left sidebar content */}
-        </div>
+      
+      {/* Main content container with proper mobile layout */}
+      <div className="flex-1 overflow-y-auto pt-[58px] pb-[88px] md:pt-0 md:pb-0 md:ml-24 lg:ml-64">
+        <div className="flex justify-center gap-3 px-6 pt-6 min-h-full">
+          <div className="relative top-5 hidden lg:block">
+            {/* Left sidebar content */}
+          </div>
 
-        <div className="max-w-6xl flex-1">
-          {selectedReligion ? (
-            <CoursePath religion={selectedReligion} />
-          ) : (
-            <div className="min-h-screen bg-gradient-to-br from-blue-900 via-purple-900 to-indigo-900 flex items-center justify-center">
-              <div className="text-center py-20 bg-white/10 backdrop-blur-sm rounded-2xl p-8 max-w-md">
-                <h2 className="text-2xl font-bold text-white mb-4">
-                  Choose a Religion to Begin Learning
-                </h2>
-                <p className="text-white/80 mb-6">
-                  Select a religion from the dropdown to start your personalized learning journey.
-                </p>
-                <div className="text-white/60 text-sm">
-                  Our AI will generate a comprehensive course structure just for you!
+          <div className="max-w-6xl flex-1">
+            {selectedReligion ? (
+              <CoursePath religion={selectedReligion} />
+            ) : (
+              <div className="min-h-full bg-gradient-to-br from-blue-900 via-purple-900 to-indigo-900 flex items-center justify-center">
+                <div className="text-center py-20 bg-white/10 backdrop-blur-sm rounded-2xl p-8 max-w-md">
+                  <h2 className="text-2xl font-bold text-white mb-4">
+                    Choose a Religion to Begin Learning
+                  </h2>
+                  <p className="text-white/80 mb-6">
+                    Select a religion from the dropdown to start your personalized learning journey.
+                  </p>
+                  <div className="text-white/60 text-sm">
+                    Our AI will generate a comprehensive course structure just for you!
+                  </div>
                 </div>
               </div>
-            </div>
-          )}
-        </div>
+            )}
+          </div>
 
-        <div className="relative top-5 hidden lg:block">
-          {/* Right sidebar content */}
+          <div className="relative top-5 hidden lg:block">
+            {/* Right sidebar content */}
+          </div>
         </div>
       </div>
+      
       <RightBar />
       <BottomBar />
       {LoginScreenEl}
-    </>
+    </div>
   );
 };
 
