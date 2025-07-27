@@ -265,29 +265,65 @@ export function LessonPage({ religion, unitId, lessonId }: LessonPageProps) {
             <CardHeader>
               <CardTitle className="text-xl text-gray-800">Study Material</CardTitle>
             </CardHeader>
-            <CardContent className="space-y-6">
-              {/* Cultural Context */}
-              <div>
-                <h3 className="font-semibold text-gray-800 mb-3">Cultural Context:</h3>
-                <div className="space-y-2">
-                  {lessonData.culturalContext.map((context, index) => (
-                    <div key={index} className="p-3 bg-blue-50 rounded-lg">
-                      <p className="text-sm text-gray-700">{context}</p>
+            <CardContent className="space-y-4">
+              {/* Compact Overview Grid */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                
+                {/* Cultural Context - Compact Pills */}
+                <div>
+                  <h3 className="font-semibold text-gray-800 mb-3 flex items-center">
+                    <span className="w-2 h-2 bg-blue-500 rounded-full mr-2"></span>
+                    Cultural Context
+                  </h3>
+                  <div className="flex flex-wrap gap-2">
+                    {lessonData.culturalContext.slice(0, 3).map((context, index) => (
+                      <span key={index} className="px-3 py-1 bg-blue-100 text-blue-800 text-xs font-medium rounded-full">
+                        {context.length > 30 ? `${context.substring(0, 30)}...` : context}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Key Terms - Compact Cards */}
+                <div>
+                  <h3 className="font-semibold text-gray-800 mb-3 flex items-center">
+                    <span className="w-2 h-2 bg-purple-500 rounded-full mr-2"></span>
+                    Key Terms ({lessonData.keyTerms.length})
+                  </h3>
+                  <div className="grid grid-cols-2 gap-2">
+                    {lessonData.keyTerms.slice(0, 4).map((term, index) => (
+                      <div key={index} className="p-2 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors group">
+                        <div className="text-xs font-bold text-gray-900 truncate">{term.term}</div>
+                        <div className="text-xs text-gray-600 truncate">{term.definition}</div>
+                      </div>
+                    ))}
+                  </div>
+                  {lessonData.keyTerms.length > 4 && (
+                    <div className="text-xs text-gray-500 mt-2">
+                      +{lessonData.keyTerms.length - 4} more terms in lesson
                     </div>
-                  ))}
+                  )}
                 </div>
               </div>
 
-              {/* Key Terms Detail */}
-              <div>
-                <h3 className="font-semibold text-gray-800 mb-3">Key Terms & Definitions:</h3>
-                <div className="space-y-3">
-                  {lessonData.keyTerms.map((term, index) => (
-                    <div key={index} className="p-4 border border-gray-200 rounded-lg">
-                      <h4 className="font-medium text-gray-800 mb-1">{term.term}</h4>
-                      <p className="text-sm text-gray-600">{term.definition}</p>
-                    </div>
-                  ))}
+              {/* Quick Stats */}
+              <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg p-3">
+                <div className="flex justify-between items-center text-sm">
+                  <div className="flex items-center space-x-4">
+                    <span className="flex items-center text-blue-600">
+                      <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                      </svg>
+                      {lessonData.culturalContext.length} Topics
+                    </span>
+                    <span className="flex items-center text-purple-600">
+                      <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3z"/>
+                      </svg>
+                      {lessonData.keyTerms.length} Terms
+                    </span>
+                  </div>
+                  <span className="text-gray-500 text-xs">~5 min read</span>
                 </div>
               </div>
 
