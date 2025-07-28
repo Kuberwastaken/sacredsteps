@@ -277,17 +277,19 @@ interface LessonTileProps {
 }
 
 function LessonTile({ lesson, unitId, religion, isLocked, position }: LessonTileProps) {
-  const tileTypes = ['book', 'star', 'dumbbell', 'trophy'];
-  const tileType = tileTypes[position % tileTypes.length];
-
-  if (!tileType) return null;
+  const tileTypes = ['book', 'star', 'dumbbell', 'trophy'] as const;
+  type TileType = typeof tileTypes[number];
   
-  const IconComponent = {
+  const tileType = tileTypes[position % tileTypes.length] as TileType;
+
+  const iconMap: Record<TileType, React.ElementType> = {
     book: BookOpen,
     star: Star,
     dumbbell: Trophy,
     trophy: Trophy,
-  }[tileType];
+  };
+  
+  const IconComponent = iconMap[tileType];
 
   return (
     <Link href={isLocked ? '#' : `/lesson/${religion}/${unitId}/${lesson.id}`}>
