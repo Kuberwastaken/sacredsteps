@@ -1,3 +1,5 @@
+/*
+import { defineFlow } from '@genkit-ai/flow';
 import { generate } from '@genkit-ai/ai';
 import { AZURE_MODEL_NAME } from '../genkit';
 import { z } from 'zod';
@@ -47,19 +49,19 @@ const CourseStructureSchema = z.object({
   modernRelevance: z.string(),
 });
 
-export const generateCourseStructure = generate({
+export const generateCourseStructure = defineFlow({
   name: 'generateCourseStructure',
-  model: AZURE_MODEL_NAME,
-  input: z.object({
+  inputSchema: z.object({
     religion: z.string(),
     targetAudience: z.enum(['complete_beginner', 'some_knowledge', 'intermediate']),
     focusAreas: z.array(z.string()).optional(),
   }),
-  output: CourseStructureSchema,
-  prompt: async ({ religion, targetAudience, focusAreas }) => {
-    const focus = focusAreas?.length ? `Special focus on: ${focusAreas.join(', ')}` : '';
-    
-    return `Create a comprehensive course structure for learning ${religion}, designed like Duolingo's language courses but for religious education.
+  outputSchema: CourseStructureSchema,
+}, async (input) => {
+  const { religion, targetAudience, focusAreas } = input;
+  const focus = focusAreas?.length ? `Special focus on: ${focusAreas.join(', ')}` : '';
+  
+  const prompt = `Create a comprehensive course structure for learning ${religion}, designed like Duolingo's language courses but for religious education.
 
 Target Audience: ${targetAudience}
 ${focus}
@@ -98,5 +100,21 @@ Focus on:
 - Ethical teachings and values
 - Community and worship practices
 - Philosophical and theological concepts`;
+
+  const llmResponse = await generate<typeof CourseStructureSchema>({
+    model: AZURE_MODEL_NAME,
+    prompt: prompt,
+    output: {
+      schema: CourseStructureSchema,
+    },
+  });
+
+  const output = llmResponse.output();
+  if (output === null) {
+    throw new Error("Output from LLM was null");
+  }
+  return output;
+});
   },
 });
+*/

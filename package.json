@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@genkit-ai/compat-oai": "^1.15.2",
+    "@genkit-ai/flow": "^0.5.17",
     "@genkit-ai/googleai": "^1.14.1",
     "@genkit-ai/next": "^1.14.1",
     "@radix-ui/react-accordion": "^1.2.3",
@@ -45,6 +46,7 @@
     "genkitx-openai": "^0.23.0",
     "lucide-react": "^0.475.0",
     "next": "^15.4.1",
+    "next-pwa": "^5.6.0",
     "react": "18.3.1",
     "react-dom": "18.3.1",
     "tailwind-merge": "^3.0.1",
@@ -55,6 +57,7 @@
   "devDependencies": {
     "@tailwindcss/postcss": "^4.1.11",
     "@types/eslint": "^8.56.2",
+    "@types/next-pwa": "^5.6.9",
     "@types/node": "^22.5.5",
     "@types/postcss-import": "^14.0.3",
     "@types/react": "^18.3.5",

@@ -279,6 +279,8 @@ interface LessonTileProps {
 function LessonTile({ lesson, unitId, religion, isLocked, position }: LessonTileProps) {
   const tileTypes = ['book', 'star', 'dumbbell', 'trophy'];
   const tileType = tileTypes[position % tileTypes.length];
+
+  if (!tileType) return null;
   
   const IconComponent = {
     book: BookOpen,
