@@ -12,6 +12,36 @@ Sacred Steps (branded as "praygo") is a revolutionary educational platform that 
 
 Covering 12+ major world religions right now including Christianity, Islam, Judaism, Hinduism, Buddhism, Sikhism, and more
 
+## Screenshots
+
+### Onboarding Experience
+The app guides new users through a personalized onboarding flow to customize their learning journey:
+
+<img src="./screenshots/img1.png" alt="Onboarding - Welcome screen" width="400" />
+<img src="./screenshots/img2.png" alt="Onboarding - Religion selection" width="400" />
+
+### AI-Generated Quiz Types
+Our AI creates diverse, engaging question formats to test your knowledge:
+
+**Multiple Choice Questions**
+<img src="./screenshots/img3.png" alt="AI-generated multiple choice quiz" width="400" />
+
+**Interactive Exercises**
+<img src="./screenshots/img4.png" alt="AI-generated interactive exercise" width="400" />
+
+**Advanced Question Types**
+<img src="./screenshots/img5.png" alt="AI-generated advanced quiz format" width="400" />
+
+### Desktop Experience
+The main dashboard with daily wisdom and learning progress:
+
+<img src="./screenshots/img6.png" alt="Desktop main screen with AI quote" />
+
+### Mobile Experience
+Optimized mobile interface for learning on-the-go:
+
+<img src="./screenshots/img7.png" alt="Mobile app interface" width="300" />
+
 ## Some Features
 
 ### Gamified Learning
