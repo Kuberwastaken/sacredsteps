@@ -7,13 +7,14 @@ import { useBoundStore } from "~/hooks/useBoundStore";
 import { CloseSvg } from "~/components/Svgs";
 import { TopBar } from "~/components/TopBar";
 import { BottomBar } from "~/components/BottomBar";
+import { MatchPairsExercise } from "~/components/exercises/match-pairs-exercise";
 
 type SimpleExercise = {
   type: 'multiple-choice' | 'true-false' | 'fill-in-the-blank' | 'match-pairs';
   question: string;
   options?: string[];
   answerTiles?: string[];
-  pairs?: { left: string; right: string }[];
+  pairs?: { term: string; definition: string }[];
   correctAnswer: number | number[];
   explanation: string;
   shuffledDefinitions?: string[]; // Added for shuffling
@@ -38,6 +39,7 @@ const Lesson: NextPage = () => {
   const [showResult, setShowResult] = useState(false);
   const [isCorrect, setIsCorrect] = useState(false);
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
+  const [fillInAnswers, setFillInAnswers] = useState<string[]>([]);
   
   const religion = useBoundStore((x) => x.religion);
   const hearts = useBoundStore((x) => x.hearts);
@@ -82,6 +84,26 @@ const Lesson: NextPage = () => {
               answerTiles: ['earth'],
               correctAnswer: [0],
               explanation: 'This is from the Beatitudes in the Sermon on the Mount, teaching about humility and gentleness.'
+            },
+            {
+              type: 'fill-in-the-blank',
+              question: 'Complete the Christian prayer: "Our _____ who art in heaven."',
+              answerTiles: ['Father'],
+              correctAnswer: 'Father',
+              explanation: 'This is the beginning of the Lord\'s Prayer, taught by Jesus to his disciples.'
+            },
+            {
+              type: 'match-pairs',
+              question: 'Match the Christian concepts with their correct definitions.',
+              pairs: [
+                { term: 'Trinity', definition: 'The Christian doctrine of God as three persons: Father, Son, and Holy Spirit' },
+                { term: 'Resurrection', definition: 'Jesus rising from the dead on the third day after crucifixion' },
+                { term: 'Communion', definition: 'Christian sacrament commemorating Jesus\' Last Supper with bread and wine' },
+                { term: 'Gospel', definition: 'The teachings of Jesus and the New Testament books about his life' },
+                { term: 'Salvation', definition: 'Deliverance from sin and its consequences through Jesus Christ' }
+              ],
+              correctAnswer: 5,
+              explanation: 'These are fundamental concepts in Christian theology and practice.'
             }
           );
           break;
@@ -108,6 +130,26 @@ const Lesson: NextPage = () => {
               answerTiles: ['alaykum'],
               correctAnswer: [0],
               explanation: '"As-salamu alaykum" means "Peace be upon you" and is a common Islamic greeting.'
+            },
+            {
+              type: 'fill-in-the-blank',
+              question: 'Complete the Islamic phrase: "_____ is the messenger of Allah."',
+              answerTiles: ['Muhammad'],
+              correctAnswer: 'Muhammad',
+              explanation: 'This is part of the Shahada, the Islamic declaration of faith.'
+            },
+            {
+              type: 'match-pairs',
+              question: 'Match the Islamic concepts with their correct definitions.',
+              pairs: [
+                { term: 'Shahada', definition: 'Islamic declaration of faith: "There is no god but Allah, Muhammad is his messenger"' },
+                { term: 'Zakat', definition: 'Obligatory charity given to the poor and needy' },
+                { term: 'Hajj', definition: 'Pilgrimage to Mecca that every Muslim must make at least once' },
+                { term: 'Ramadan', definition: 'Holy month of fasting from dawn to sunset' },
+                { term: 'Imam', definition: 'Islamic leader who leads prayers in a mosque' }
+              ],
+              correctAnswer: 5,
+              explanation: 'These are key concepts in Islamic practice and belief.'
             }
           );
           break;
@@ -132,8 +174,21 @@ const Lesson: NextPage = () => {
               type: 'fill-in-the-blank',
               question: 'Complete the Jewish blessing: "Baruch atah Adonai, _____."',
               answerTiles: ['Eloheinu'],
-              correctAnswer: [0],
+              correctAnswer: 'Eloheinu',
               explanation: 'This is the beginning of many Jewish blessings, meaning "Blessed are You, Lord our God."'
+            },
+            {
+              type: 'match-pairs',
+              question: 'Match the Jewish concepts with their correct definitions.',
+              pairs: [
+                { term: 'Pharisees', definition: 'Jewish religious party emphasizing oral law and tradition' },
+                { term: 'Sadducees', definition: 'Jewish priestly aristocracy associated with the Temple' },
+                { term: 'Messiah', definition: 'Hebrew term meaning "anointed one," referring to an expected deliverer' },
+                { term: 'Diaspora', definition: 'Jewish communities living outside of Palestine' },
+                { term: 'Sanhedrin', definition: 'Jewish high court and governing body in Jerusalem' }
+              ],
+              correctAnswer: 5,
+              explanation: 'These are key concepts in understanding Jewish history and tradition.'
             }
           );
           break;
@@ -158,8 +213,21 @@ const Lesson: NextPage = () => {
               type: 'fill-in-the-blank',
               question: 'Complete the Hindu greeting: "Namaste" means "I bow to the _____ in you."',
               answerTiles: ['divine'],
-              correctAnswer: [0],
+              correctAnswer: 'divine',
               explanation: 'Namaste recognizes the divine spark within each person, a fundamental Hindu concept.'
+            },
+            {
+              type: 'match-pairs',
+              question: 'Match the Hindu concepts with their correct definitions.',
+              pairs: [
+                { term: 'Karma', definition: 'The law of cause and effect where actions determine future consequences' },
+                { term: 'Dharma', definition: 'Duty, righteousness, or moral order in Hindu life' },
+                { term: 'Moksha', definition: 'Liberation from the cycle of rebirth and union with Brahman' },
+                { term: 'Atman', definition: 'The eternal soul or true self in Hindu philosophy' },
+                { term: 'Brahman', definition: 'The ultimate reality or supreme cosmic power' }
+              ],
+              correctAnswer: 5,
+              explanation: 'These are fundamental concepts in Hindu philosophy and spirituality.'
             }
           );
           break;
@@ -184,8 +252,21 @@ const Lesson: NextPage = () => {
               type: 'fill-in-the-blank',
               question: 'Complete the Buddhist greeting: "Namo _____."',
               answerTiles: ['Buddhaya'],
-              correctAnswer: [0],
+              correctAnswer: 'Buddhaya',
               explanation: '"Namo Buddhaya" means "I bow to the Buddha" and is a common Buddhist greeting.'
+            },
+            {
+              type: 'match-pairs',
+              question: 'Match the Buddhist concepts with their correct definitions.',
+              pairs: [
+                { term: 'Nirvana', definition: 'The ultimate state of liberation from suffering and rebirth' },
+                { term: 'Dharma', definition: 'The teachings of the Buddha and the path to enlightenment' },
+                { term: 'Sangha', definition: 'The community of Buddhist monks, nuns, and practitioners' },
+                { term: 'Eightfold Path', definition: 'The Buddha\'s guide to end suffering through right understanding and action' },
+                { term: 'Meditation', definition: 'Mindfulness practice to develop awareness and achieve enlightenment' }
+              ],
+              correctAnswer: 5,
+              explanation: 'These are core concepts in Buddhist philosophy and practice.'
             }
           );
           break;
@@ -200,10 +281,8 @@ const Lesson: NextPage = () => {
           });
       }
       
-      // After all exercises are pushed, shuffle definitions for match-pairs
-      // Remove all match-pairs exercises
-      const filteredExercises = exercises.filter(ex => ex.type !== 'match-pairs');
-      setExercises(filteredExercises);
+      // Keep all exercises including match-pairs
+      setExercises(exercises);
       setIsLoading(false);
     };
 
@@ -419,6 +498,12 @@ const Lesson: NextPage = () => {
                       <div className="flex-1">
                         <input
                           type="text"
+                          value={fillInAnswers[index] || ''}
+                          onChange={(e) => {
+                            const newAnswers = [...fillInAnswers];
+                            newAnswers[index] = e.target.value;
+                            setFillInAnswers(newAnswers);
+                          }}
                           className="w-full p-3 rounded-lg bg-white/10 border border-white/20 text-white focus:outline-none focus:ring-2 focus:ring-green-500"
                           placeholder={`Enter the missing word`}
                           disabled={showResult}
@@ -427,13 +512,41 @@ const Lesson: NextPage = () => {
                     </div>
                   ))}
                   <button
-                    onClick={() => handleAnswer(0)}
+                    onClick={() => {
+                      const userAnswer = fillInAnswers.join(' ').toLowerCase().trim();
+                      const correctAnswer = exercise.correctAnswer.toString().toLowerCase().trim();
+                      const isCorrect = userAnswer === correctAnswer;
+                      
+                      setIsCorrect(isCorrect);
+                      setShowResult(true);
+                      setSelectedAnswer(0);
+                      
+                      if (isCorrect) {
+                        setCorrectCount(prev => prev + 1);
+                      } else {
+                        loseHeart();
+                      }
+                    }}
                     disabled={showResult}
                     className="w-full p-4 rounded-xl bg-green-500 text-white font-semibold hover:bg-green-600 transition-colors"
                   >
                     Check Answer
                   </button>
                 </div>
+              )}
+              
+              {exercise.type === 'match-pairs' && exercise.pairs && (
+                <MatchPairsExercise
+                  pairs={exercise.pairs}
+                  onAnswer={(isCorrect, answer) => {
+                    setIsCorrect(isCorrect);
+                    setShowResult(true);
+                    if (!isCorrect) {
+                      loseHeart();
+                    }
+                  }}
+                  hearts={hearts}
+                />
               )}
             </div>
 
